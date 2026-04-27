@@ -2,13 +2,13 @@
   <div class="min-h-screen bg-[#F8FAFC] font-sans flex flex-col items-center">
 
     <nav class="max-w-7xl mx-auto w-full px-8 py-6 flex justify-between items-center bg-transparent">
-      <div class="flex items-center gap-3 cursor-pointer" @click="goTo('/')">
+      <Link href="/" class="flex items-center gap-3 cursor-pointer">
         <div class="text-green-500 text-3xl">🌱</div>
         <div class="leading-tight">
           <div class="text-2xl font-extrabold text-[#10B981] tracking-tight">LesGo</div>
           <div class="text-[10px] text-gray-500 font-medium tracking-wide">Digital Tutoring Ecosystem</div>
         </div>
-      </div>
+      </Link>
       <div class="hidden md:flex space-x-8 text-gray-600 font-medium text-sm">
         <a href="#" class="hover:text-blue-600 transition">Beranda</a>
         <a href="#" class="hover:text-blue-600 transition">Program</a>
@@ -16,12 +16,12 @@
         <a href="#" class="hover:text-blue-600 transition">Cari Tutor</a>
       </div>
       <div class="flex items-center space-x-8">
-        <button class="bg-blue-600 text-white px-8 py-2.5 rounded-lg font-bold shadow-md cursor-default">
+        <Link href="/pilih-masuk" class="text-blue-700 font-bold hover:underline cursor-pointer">
           Masuk
-        </button>
-        <button @click="goTo('/pilih-daftar')" class="text-blue-700 font-bold hover:underline cursor-pointer">
+        </Link>
+        <Link href="/pilih-daftar" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-lg font-bold shadow-md transition">
           Daftar
-        </button>
+        </Link>
       </div>
     </nav>
 
@@ -33,32 +33,32 @@
             Selamat Datang Kembali
           </h1>
           <p class="text-gray-400 font-medium text-sm mb-10">
-            Masuk akun Vidya Loka untuk belajar dengan tutor terbaik.
+            Masuk akun LesGo untuk memantau perkembangan belajar anak Anda.
           </p>
 
-          <form class="space-y-6" @submit.prevent="goTo('/dashboard-siswa')">
+          <form class="space-y-6" @submit.prevent="handleLogin">
 
             <div>
               <label class="block text-sm font-bold text-gray-800 mb-2">Alamat Email <span class="text-red-500">*</span></label>
-              <input type="email" placeholder="kenzoaliza@gmail.com" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 transition-all">
+              <input type="email" placeholder="sarah@gmail.com" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-400 outline-none placeholder-gray-400 transition-all">
             </div>
 
             <div>
               <label class="block text-sm font-bold text-gray-800 mb-2">Kata Sandi <span class="text-red-500">*</span></label>
-              <input type="password" placeholder="********" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none placeholder-gray-400 tracking-widest transition-all">
+              <input type="password" placeholder="********" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-green-400 outline-none placeholder-gray-400 tracking-widest transition-all">
             </div>
 
             <div class="flex items-center justify-between pt-2">
               <div class="flex items-center">
-                <input type="checkbox" id="remember" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
-                <label for="remember" class="ml-2 text-xs text-gray-500 font-medium cursor-pointer">Ingat saya saat masuk</label>
+                <input type="checkbox" id="remember" class="w-4 h-4 text-green-500 bg-gray-100 border-gray-300 rounded focus:ring-green-500 cursor-pointer">
+                <label for="remember" class="ml-2 text-xs text-gray-400 font-medium cursor-pointer">Ingat saya saat masuk</label>
               </div>
-              <a href="#" class="text-xs font-bold text-gray-400 hover:text-blue-600 transition-colors">Lupa kata sandi?</a>
+              <a href="#" class="text-xs font-bold text-gray-400 hover:text-green-500 transition-colors">Lupa kata sandi?</a>
             </div>
 
             <div class="pt-4">
-              <button type="submit" class="w-full bg-[#1A56DB] hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-md transition-colors">
-                Masuk Sebagai Siswa
+              <button type="submit" class="w-full bg-[#10B981] hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-md transition-colors text-lg">
+                Masuk Sebagai Orang Tua
               </button>
             </div>
 
@@ -67,17 +67,17 @@
           <div class="mt-8 text-center md:text-left pl-2">
             <p class="text-xs font-medium text-gray-400">
               Belum memiliki akun?
-              <button @click="goTo('/pilih-daftar')" class="text-blue-600 font-bold hover:underline ml-1">Daftar</button>
+              <Link href="/daftar-orang-tua" class="text-green-500 font-bold hover:underline ml-1">Daftar</Link>
             </p>
           </div>
 
         </div>
 
-        <div class="hidden md:flex w-1/2 relative items-center justify-center bg-white">
-          <div class="w-[90%] h-[90%] border-4 border-dashed border-gray-100 rounded-[30px] flex flex-col items-center justify-center bg-gray-50/50">
-            <span class="text-8xl mb-6">👧🏽🎒🌟</span>
+        <div class="hidden md:flex w-1/2 relative items-center justify-center bg-white p-6">
+          <div class="w-[95%] h-[95%] border-4 border-dashed border-gray-100 rounded-[30px] flex flex-col items-center justify-center bg-gray-50/50">
+            <span class="text-8xl mb-6">👩‍👦📊📱</span>
             <p class="text-gray-400 font-bold text-lg text-center">
-              Tempat Gambar 3D Anak<br>
+              Tempat Gambar 3D Orang Tua<br>
               <span class="text-sm font-medium">(Masukkan tag img di sini nanti)</span>
             </p>
           </div>
@@ -89,9 +89,10 @@
 </template>
 
 <script setup>
-import { router } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 
-const goTo = (url) => {
-  router.visit(url)
+const handleLogin = () => {
+  // Langsung redirect ke Dashboard Orang Tua untuk keperluan testing
+  router.visit('/dashboard-orang-tua');
 }
 </script>
