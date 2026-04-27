@@ -92,7 +92,7 @@
 import { Link, router } from '@inertiajs/vue3'
 
 const handleLogin = () => {
-  // Nanti rute ini akan diarahkan ke Dashboard khusus Tutor
-  alert('Proses Login Tutor...');
+  // Langsung redirect ke Dashboard Tutor
+  router.visit('/dashboard-tutor');
 }
 </script>

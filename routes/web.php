@@ -3,6 +3,7 @@
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\TutorDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,6 +48,7 @@ Route::get('/masuk-siswa', function () {
 });
 
 Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
+Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
 
 Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
     ->name('study-classes.materials.store');
