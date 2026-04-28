@@ -28,6 +28,10 @@
           <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Selamat Datang Kembali</h1>
           <p class="text-gray-400 font-medium text-sm mb-10">Masuk akun LesGo untuk memantau perkembangan belajar anak Anda.</p>
 
+          <div v-if="status" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium">
+            {{ status }}
+          </div>
+
           <form class="space-y-6" @submit.prevent="submit">
             <LesGoInput
                 label="Alamat Email"
@@ -80,9 +84,11 @@
 </template>
 
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3'
+import { Link, useForm, usePage } from '@inertiajs/vue3'
 import LesGoInput from '@/Components/LesGoInput.vue'
 import LesGoButton from '@/Components/LesGoButton.vue'
+
+const status = usePage().props.status
 
 const form = useForm({
   email: '',

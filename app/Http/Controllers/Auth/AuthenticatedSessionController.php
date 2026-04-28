@@ -34,6 +34,14 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = Auth::user();
+
+        // If registration is not complete, redirect to the pending step
+        if ($user->registration_step < 4) {
+            if ($user->registration_step <= 2) {
+                return redirect()->route('register.step2');
+            }
+            return redirect()->route('register.step3');
+        }
         
         // Redirect based on role
         if ($user->role === 'siswa') {

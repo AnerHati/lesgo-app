@@ -31,6 +31,13 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // Logout any existing session so registration always works
+        if (Auth::check()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
@@ -46,11 +53,13 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Redirect to login page based on role (user must login first)
+        $loginUrl = match ($user->role) {
+            'tutor' => '/login-tutor',
+            'orangtua' => '/masuk-orang-tua',
+            default => '/masuk-siswa',
+        };
 
-        // Update registration step
-        $user->update(['registration_step' => 2]);
-
-        return redirect()->route('register.step2');
+        return redirect($loginUrl)->with('status', 'Pendaftaran berhasil! Silakan masuk dengan akun Anda.');
     }
 }
