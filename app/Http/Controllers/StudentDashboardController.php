@@ -13,7 +13,7 @@ class StudentDashboardController extends Controller
     {
         // Prevent login/dashboard crash when new tables are not migrated yet.
         if (! Schema::hasTable('study_classes')) {
-            return Inertia::render('Dashboard/Student', [
+            return Inertia::render('Dashboard/Student/Index', [
                 'japaneseClassData' => null,
             ]);
         }
@@ -27,7 +27,7 @@ class StudentDashboardController extends Controller
             ])
             ->first();
 
-        return Inertia::render('Dashboard/Student', [
+        return Inertia::render('Dashboard/Student/Index', [
             'japaneseClassData' => $japaneseClass,
         ]);
     }

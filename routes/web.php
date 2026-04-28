@@ -18,9 +18,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,13 +28,13 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 Route::get('/daftar-siswa', function () {
-    return Inertia::render('Auth/RegisterStudent');
+    return Inertia::render('Auth/Student/Register');
 });
 Route::get('/lengkapi-profil', function () {
-    return Inertia::render('Auth/CompleteProfile');
+    return Inertia::render('Auth/Shared/CompleteProfile');
 });
 Route::get('/verifikasi', function () {
-    return Inertia::render('Auth/VerifyAccount');
+    return Inertia::render('Auth/Shared/VerifyAccount');
 });
 Route::get('/pilih-daftar', function () {
     return Inertia::render('Auth/RegisterSelection');
@@ -45,58 +43,53 @@ Route::get('/pilih-masuk', function () {
     return Inertia::render('Auth/LoginSelection');
 });
 Route::get('/masuk-siswa', function () {
-    return Inertia::render('Auth/LoginStudent');
+    return Inertia::render('Auth/Student/Login');
 });
 
-Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
-Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
-Route::get('/dashboard-orang-tua', [ParentDashboardController::class, 'index'])->name('dashboard.orangtua');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
+    Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
+    Route::get('/dashboard-orang-tua', [ParentDashboardController::class, 'index'])->name('dashboard.orangtua');
+});
 
 Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
     ->name('study-classes.materials.store');
 
-Route::get('/lengkapi-profil', function () {
-    return Inertia::render('Auth/regisAkunSiswa1');
-});
-// Form Lengkapi Profil (Langkah 2)
-Route::get('/lengkapi-profil', function () {
-    return Inertia::render('Auth/regisAkunSiswa1');
-});
-// Form Verifikasi KTP & Ijazah (Langkah 3)
-Route::get('/verifikasi', function () {
-    return Inertia::render('Auth/regisAkunSiswa2');
-});
-// Halaman Pemilihan Masuk Akun
-Route::get('/masuk-akun', function () {
-    return Inertia::render('Auth/MasukAkun');
-});
-// Form Pendaftaran Tutor (Langkah 1)
-Route::get('/daftar-tutor', function () {
-    return Inertia::render('Auth/DaftarAkunTutor');
-});
-// Form Lengkapi Profil Tutor (Langkah 2)
+    // Registration Steps
+    Route::get('/lengkapi-profil', function () {
+        return Inertia::render('Auth/Shared/CompleteProfile');
+    })->name('register.step2');
+
+    Route::post('/lengkapi-profil', [App\Http\Controllers\Auth\RegisterStepController::class, 'storeStep2'])
+        ->name('register.step2.store');
+
+    Route::get('/verifikasi', function () {
+        return Inertia::render('Auth/Shared/VerifyAccount');
+    })->name('register.step3');
+
+    Route::post('/verifikasi', [App\Http\Controllers\Auth\RegisterStepController::class, 'storeStep3'])
+        ->name('register.step3.store');
+
+    // Dashboard routes
+    Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
 Route::get('/lengkapi-profil-tutor', function () {
-    return Inertia::render('Auth/RegisAkunTutor1');
+    return Inertia::render('Auth/Tutor/RegisterStep1');
 });
 // Form Verifikasi Tutor (Langkah 3)
 Route::get('/verifikasi-tutor', function () {
-    return Inertia::render('Auth/RegisAkunTutor2');
+    return Inertia::render('Auth/Tutor/RegisterStep2');
 });
-// Form Login Khusus Tutor
 Route::get('/login-tutor', function () {
-    return Inertia::render('Auth/LoginTutor');
+    return Inertia::render('Auth/Tutor/Login');
 });
-// Form Pendaftaran Orang Tua (Langkah 1)
 Route::get('/daftar-orang-tua', function () {
-    return Inertia::render('Auth/DaftarAkunOrangTua');
+    return Inertia::render('Auth/Parent/Register');
 });
 
-// Form Login Khusus Orang Tua
 Route::get('/masuk-orang-tua', function () {
-    return Inertia::render('Auth/LoginOrangTua');
+    return Inertia::render('Auth/Parent/Login');
 });
 
-// Form Lengkapi Profil Orang Tua (Langkah 2)
 Route::get('/lengkapi-profil-orang-tua', function () {
-    return Inertia::render('Auth/RegisAkunOrangTua1');
+    return Inertia::render('Auth/Parent/RegisterStep1');
 });

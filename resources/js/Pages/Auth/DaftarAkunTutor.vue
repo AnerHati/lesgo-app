@@ -40,22 +40,22 @@
             
             <div>
               <label class="block text-sm font-bold text-gray-800 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
-              <input type="text" placeholder="Jonathan" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 transition-all">
+              <input type="text" v-model="form.name" required placeholder="Jonathan" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 transition-all">
             </div>
 
             <div>
               <label class="block text-sm font-bold text-gray-800 mb-2">Alamat Email <span class="text-red-500">*</span></label>
-              <input type="email" placeholder="jonathan@gmail.com" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 transition-all">
+              <input type="email" v-model="form.email" required placeholder="jonathan@gmail.com" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 transition-all">
             </div>
 
             <div class="flex gap-4">
               <div class="w-1/2">
                 <label class="block text-sm font-bold text-gray-800 mb-2">Kata Sandi <span class="text-red-500">*</span></label>
-                <input type="password" placeholder="********" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 tracking-widest transition-all">
+                <input type="password" v-model="form.password" required placeholder="********" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 tracking-widest transition-all">
               </div>
               <div class="w-1/2">
                 <label class="block text-sm font-bold text-gray-800 mb-2">Konfirmasi Kata Sandi <span class="text-red-500">*</span></label>
-                <input type="password" placeholder="********" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 tracking-widest transition-all">
+                <input type="password" v-model="form.password_confirmation" required placeholder="********" class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-yellow-400 outline-none placeholder-gray-400 tracking-widest transition-all">
               </div>
             </div>
 
@@ -99,10 +99,17 @@
 </template>
 
 <script setup>
-import { Link, router } from '@inertiajs/vue3'
+import { Link, useForm } from '@inertiajs/vue3'
+
+const form = useForm({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+  role: 'tutor' // <-- Pastikan mengirimkan identitas sebagai tutor
+})
 
 const goToNextStep = () => {
-  // Langsung arahkan ke halaman Lengkapi Profil Tutor
-  router.visit('/lengkapi-profil-tutor')
+  form.post('/register')
 }
 </script>

@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,7 +17,25 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        // Logika redirect pintar berdasarkan role
+        $middleware->redirectUsersTo(function (Request $request) {
+            $user = $request->user();
+            
+            if (!$user) return '/';
+
+            // Cegat user yang belum selesai melewati Step 2 & 3 agar tidak kebablasan
+            if ($user->registration_step < 3) {
+                return route('register.step2');
+            }
+
+            if ($user->role === 'tutor') {
+                return route('dashboard.tutor');
+            } elseif ($user->role === 'orangtua' || $user->role === 'parent') {
+                return route('dashboard.orangtua');
+            }
+
+            return route('dashboard.siswa');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -22,6 +22,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'address',
+        'ktp_path',
+        'ijazah_path',
+        'registration_step',
+        'is_verified',
     ];
 
     /**

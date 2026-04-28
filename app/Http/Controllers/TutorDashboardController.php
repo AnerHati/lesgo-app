@@ -9,6 +9,6 @@ class TutorDashboardController extends Controller
 {
     public function __invoke(): Response
     {
-        return Inertia::render('Dashboard/Tutor');
+        return Inertia::render('Dashboard/Tutor/Index');
     }
 }

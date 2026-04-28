@@ -15,6 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('role')->default('siswa'); // Tambahkan role
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->string('ktp_path')->nullable();
+            $table->string('ijazah_path')->nullable();
+            $table->integer('registration_step')->default(1);
+            $table->boolean('is_verified')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

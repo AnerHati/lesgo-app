@@ -18,7 +18,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/Login', [
+        return Inertia::render('Auth/Shared/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
         ]);
@@ -33,7 +33,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+        
+        // Redirect based on role
+        if ($user->role === 'siswa') {
+            return redirect()->route('dashboard.siswa');
+        } elseif ($user->role === 'tutor') {
+            return redirect()->route('dashboard.tutor');
+        } elseif ($user->role === 'orangtua' || $user->role === 'parent') {
+            return redirect()->route('dashboard.orangtua');
+        }
+
+        return redirect()->route('dashboard.siswa'); // Default fallback
     }
 
     /**

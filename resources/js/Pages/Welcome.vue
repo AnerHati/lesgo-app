@@ -2,26 +2,26 @@
   <div class="min-h-screen bg-white font-sans overflow-x-hidden">
 
     <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center bg-white sticky top-0 z-50">
-      <div class="flex items-center gap-3">
+      <Link href="/" class="flex items-center gap-3">
         <div class="text-green-500 text-3xl">🌱</div>
         <div class="leading-tight">
           <div class="text-2xl font-extrabold text-[#10B981] tracking-tight">LesGo</div>
           <div class="text-[10px] text-gray-500 font-medium tracking-wide">Digital Tutoring Ecosystem</div>
         </div>
-      </div>
+      </Link>
       <div class="hidden md:flex space-x-8 text-gray-700 font-medium text-sm">
-        <a href="#" class="text-blue-600 font-semibold">Beranda</a>
-        <a href="#" class="hover:text-blue-600 transition">Program</a>
-        <a href="#" class="hover:text-blue-600 transition">Cara Kerja</a>
-        <a href="#" class="hover:text-blue-600 transition">Cari Tutor</a>
+        <Link href="/" class="text-blue-600 font-semibold">Beranda</Link>
+        <a href="#program" class="hover:text-blue-600 transition">Program</a>
+        <a href="#cara-kerja" class="hover:text-blue-600 transition">Cara Kerja</a>
+        <a href="#cari-tutor" class="hover:text-blue-600 transition">Cari Tutor</a>
       </div>
       <div class="flex items-center space-x-6">
-        <button @click="goTo('/pilih-masuk')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-lg font-bold shadow-sm transition">
+        <Link href="/pilih-masuk" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-lg font-bold shadow-sm transition">
           Masuk
-        </button>
-        <button @click="goTo('/pilih-daftar')" class="text-blue-600 font-bold hover:text-blue-800 transition cursor-pointer">
+        </Link>
+        <Link href="/pilih-daftar" class="text-blue-600 font-bold hover:text-blue-800 transition cursor-pointer">
           Daftar
-        </button>
+        </Link>
       </div>
     </nav>
 
@@ -219,7 +219,7 @@
 </template>
 
 <script setup>
-import { router } from '@inertiajs/vue3'
+import { router, Link } from '@inertiajs/vue3'
 
 const goTo = (url) => {
   router.visit(url)
