@@ -42,24 +42,21 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:siswa,tutor,orangtua,parent'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'siswa',
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));
 
-        // Redirect to login page based on role (user must login first)
-        $loginUrl = match ($user->role) {
-            'tutor' => '/login-tutor',
-            'orangtua' => '/masuk-orang-tua',
-            default => '/masuk-siswa',
-        };
+        // Auto login user to proceed with registration steps
+        Auth::login($user);
 
-        return redirect($loginUrl)->with('status', 'Pendaftaran berhasil! Silakan masuk dengan akun Anda.');
+        return redirect()->route('register.step2');
     }
 }

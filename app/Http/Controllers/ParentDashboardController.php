@@ -12,6 +12,6 @@ class ParentDashboardController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Dashboard/Parent/Index');
+        return Inertia::render('Dashboard/parent/Index');
     }
 }

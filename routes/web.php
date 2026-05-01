@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
 
     // Registration Steps (user is logged in but not fully registered yet)
     Route::get('/lengkapi-profil', function () {
+        if (Auth::user()->registration_step >= 4) return redirect('/');
         return Inertia::render('Auth/Shared/CompleteProfile');
     })->name('register.step2');
 
@@ -66,23 +67,15 @@ Route::middleware('auth')->group(function () {
         ->name('register.step2.store');
 
     Route::get('/verifikasi', function () {
+        if (Auth::user()->registration_step < 3) return redirect()->route('register.step2');
+        if (Auth::user()->registration_step >= 4) return redirect('/');
         return Inertia::render('Auth/Shared/VerifyAccount');
     })->name('register.step3');
 
     Route::post('/verifikasi', [RegisterStepController::class, 'storeStep3'])
         ->name('register.step3.store');
 
-    Route::get('/lengkapi-profil-orang-tua', function () {
-        return Inertia::render('Auth/Parent/RegisterStep1');
-    });
 
-    Route::get('/lengkapi-profil-tutor', function () {
-        return Inertia::render('Auth/Tutor/RegisterStep1');
-    });
-
-    Route::get('/verifikasi-tutor', function () {
-        return Inertia::render('Auth/Tutor/RegisterStep2');
-    });
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -93,8 +86,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
     Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
     Route::get('/dashboard-orang-tua', [ParentDashboardController::class, 'index'])->name('dashboard.orangtua');
-
-    // Materials
     Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
         ->name('study-classes.materials.store');
 });

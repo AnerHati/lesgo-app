@@ -24,8 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
             if (!$user) return '/';
 
             // Cegat user yang belum selesai melewati Step 2 & 3 agar tidak kebablasan
-            if ($user->registration_step < 3) {
-                return route('register.step2');
+            if ($user->registration_step < 4) {
+                if ($user->registration_step <= 2) {
+                    return route('register.step2');
+                }
+                return route('register.step3');
             }
 
             if ($user->role === 'tutor') {

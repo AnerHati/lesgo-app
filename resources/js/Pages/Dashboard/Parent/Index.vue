@@ -20,6 +20,10 @@
       <TutorAnak v-else-if="activeSection === 'tutor_saya'" @navigate="goNav" />
       <ProgresAnak v-else-if="activeSection === 'progres_anak'" @navigate="goNav" />
       <KelasAnak v-else-if="activeSection === 'kelas_anak'" @navigate="goNav" />
+      <ParentDetailKelasAnak v-else-if="activeSection === 'detail_kelas_anak'" @navigate="goNav" />
+      <ParentKelasSaya v-else-if="activeSection === 'jadwal'" @navigate="goNav" />
+      <Pesan v-else-if="activeSection === 'pesan'" @navigate="goNav" />
+      <Pengaturan v-else-if="activeSection === 'pengaturan'" @navigate="goNav" />
       <template v-else>
           <div class="flex-1 flex items-center justify-center text-gray-400 font-medium h-[40vh]">
             Menu {{ activeSection }} sedang dalam pengembangan.
@@ -37,6 +41,10 @@ import CariTutor from './CariTutor.vue';
 import TutorAnak from './TutorAnak.vue';
 import ProgresAnak from './ProgresAnak.vue';
 import KelasAnak from './KelasAnak.vue';
+import ParentDetailKelasAnak from './ParentDetailKelasAnak.vue';
+import ParentKelasSaya from './ParentKelasSaya.vue';
+import Pesan from './Pesan.vue';
+import Pengaturan from './Pengaturan.vue';
 
 const props = defineProps({
   pageTitle: {

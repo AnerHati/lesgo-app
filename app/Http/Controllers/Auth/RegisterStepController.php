@@ -30,13 +30,17 @@ class RegisterStepController extends Controller
     {
         $request->validate([
             'ktp' => ['required', 'image', 'max:5120'],
-            'ijazah' => ['required', 'image', 'max:5120'],
+            'ijazah' => ['nullable', 'image', 'max:5120'],
         ]);
 
         $user = Auth::user();
 
         $ktpPath = $request->file('ktp')->store('verifications/ktp', 'public');
-        $ijazahPath = $request->file('ijazah')->store('verifications/ijazah', 'public');
+        
+        $ijazahPath = null;
+        if ($request->hasFile('ijazah')) {
+            $ijazahPath = $request->file('ijazah')->store('verifications/ijazah', 'public');
+        }
 
         $user->update([
             'ktp_path' => $ktpPath,
@@ -45,13 +49,20 @@ class RegisterStepController extends Controller
             'is_verified' => false, // Waiting for admin
         ]);
 
-        // Final redirect based on role
-        if ($user->role === 'tutor') {
-            return redirect()->route('dashboard.tutor');
-        } elseif ($user->role === 'orangtua') {
-            return redirect()->route('dashboard.orangtua');
+        $role = $user->role;
+
+        // Log out the user after completing registration steps
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Final redirect to login page based on role
+        if ($role === 'tutor') {
+            return redirect('/login-tutor')->with('status', 'Pendaftaran selesai! Silakan masuk dengan akun Anda.');
+        } elseif ($role === 'orangtua' || $role === 'parent') {
+            return redirect('/masuk-orang-tua')->with('status', 'Pendaftaran selesai! Silakan masuk dengan akun Anda.');
         }
 
-        return redirect()->route('dashboard.siswa');
+        return redirect('/masuk-siswa')->with('status', 'Pendaftaran selesai! Silakan masuk dengan akun Anda.');
     }
 }

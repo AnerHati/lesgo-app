@@ -79,7 +79,7 @@
                      </button>
                    </div>
                    <div v-else-if="kelas.status === 'aktif'">
-                     <button class="w-full bg-[#2563EB] text-white py-3 rounded-xl font-bold text-sm shadow-sm hover:bg-blue-700 transition">
+                     <button @click="goNav('detail_kelas_anak')" class="w-full bg-[#2563EB] text-white py-3 rounded-xl font-bold text-sm shadow-sm hover:bg-blue-700 transition">
                        Lihat Materi
                      </button>
                    </div>
