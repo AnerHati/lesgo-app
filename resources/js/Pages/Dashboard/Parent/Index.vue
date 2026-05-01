@@ -5,14 +5,15 @@
     :active-section="activeSection"
     @navigate="goNav"
   >
-    <!-- Child Selection Bar (Specific to Parent) -->
-    <div class="mb-6 flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-2 shadow-sm cursor-pointer hover:bg-gray-50 transition w-fit">
-        <div class="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center text-xs overflow-hidden">
-            👦🏽
-        </div>
-        <span class="text-sm font-bold text-gray-800">Kenzo <span class="text-gray-500 font-medium">(SD)</span></span>
-        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-    </div>
+    <template #header-left>
+      <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-full px-4 py-1.5 shadow-sm cursor-pointer hover:bg-gray-50 transition w-fit">
+          <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-gray-100">
+              <img src="https://ui-avatars.com/api/?name=Kenzo+Aliza&background=ffedd5&color=c2410c" class="w-full h-full object-cover">
+          </div>
+          <span class="text-sm font-bold text-gray-800">Kenzo <span class="text-gray-500 font-medium">(SD)</span></span>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+    </template>
 
     <div class="space-y-6">
       <Beranda v-if="activeSection === 'beranda'" @navigate="goNav" />

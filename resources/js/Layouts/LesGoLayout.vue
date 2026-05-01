@@ -62,9 +62,9 @@ function handleLogout() {
                     v-for="item in sidebarMenu"
                     :key="item.id"
                     type="button"
-                    class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                    class="w-full flex items-center gap-3 px-4 py-3 rounded-[14px] text-left transition-all duration-200 outline-none"
                     :class="activeSection === item.id
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-md shadow-blue-500/20'
+                        ? 'bg-[#3B82F6] text-white font-bold shadow-md shadow-blue-500/20'
                         : 'text-gray-500 hover:bg-gray-50 font-medium hover:translate-x-1'"
                     @click="handleNavigate(item.id)"
                 >
@@ -86,26 +86,24 @@ function handleLogout() {
         <main class="flex-1 flex flex-col overflow-hidden w-full relative">
             
             <!-- Header -->
-            <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md px-4 lg:px-8 py-4 flex items-center justify-between border-b border-gray-100/50">
-                <div class="flex items-center gap-4 flex-1">
+            <header class="sticky top-0 z-40 bg-white px-4 lg:px-8 py-4 flex items-center justify-between border-b border-gray-100 shadow-sm">
+                <div class="flex items-center gap-6 flex-1">
                     <button @click="isMobileMenuOpen = true" class="lg:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-100 rounded-lg p-1 shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                     
-                    <div class="flex-1 max-w-2xl relative hidden sm:block">
-                        <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">🔍</span>
-                        <input type="text" placeholder="Cari sesuatu..." class="w-full bg-[#F3F4F6] border-none rounded-xl py-3 pl-12 pr-4 text-sm focus:ring-2 focus:ring-blue-100 outline-none">
+                    <div class="flex-1 relative hidden sm:block">
+                        <slot name="header-left" />
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 ml-4 lg:ml-6 shrink-0">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold text-gray-900">{{ user?.name || 'User' }}</p>
-                        <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">{{ user?.role || 'Member' }}</p>
+                <div class="flex items-center gap-4 ml-4 lg:ml-6 shrink-0">
+                    <div class="text-right hidden sm:block leading-tight">
+                        <p class="text-[14px] font-bold text-gray-800">Sarah Ambarawati</p>
+                        <p class="text-[12px] text-gray-400 font-medium">Tutor</p>
                     </div>
-                    <div class="w-10 h-10 bg-blue-100 rounded-full ring-4 ring-white shadow-sm overflow-hidden flex items-center justify-center shrink-0">
-                        <img v-if="user?.profile_photo_url" :src="user.profile_photo_url" class="w-full h-full object-cover" />
-                        <span v-else class="text-xl">👤</span>
+                    <div class="w-12 h-12 rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center shrink-0">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" class="w-full h-full object-cover" />
                     </div>
                 </div>
             </header>
