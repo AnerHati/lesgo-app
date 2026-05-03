@@ -99,6 +99,8 @@ const form = useForm({
 const submit = () => {
   form.post(route('login'), {
     onFinish: () => form.reset('password'),
+    onFinish: () => form.get(route('dashboard.tutor')),
+    
   })
 }
 </script>
