@@ -83,9 +83,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Dashboard routes
-    Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
-    Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
-    Route::get('/dashboard-orang-tua', [ParentDashboardController::class, 'index'])->name('dashboard.orangtua');
-    Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
-        ->name('study-classes.materials.store');
+    Route::middleware('role:siswa')->group(function () {
+        Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
+    });
+
+    Route::middleware('role:tutor')->group(function () {
+        Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
+        Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
+            ->name('study-classes.materials.store');
+    });
+
+    Route::middleware('role:orangtua')->group(function () {
+        Route::get('/dashboard-orang-tua', [ParentDashboardController::class, 'index'])->name('dashboard.orangtua');
+    });
 });
