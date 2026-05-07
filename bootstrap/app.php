@@ -22,27 +22,42 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Logika redirect pintar berdasarkan role
+                // Logika redirect pintar berdasarkan role (Updated Multi-Role)
         $middleware->redirectUsersTo(function (Request $request) {
             $user = $request->user();
             
             if (!$user) return '/';
 
-            // Cegat user yang belum selesai melewati Step 2 & 3 agar tidak kebablasan
-            if ($user->registration_step < 4) {
-                if ($user->registration_step <= 2) {
-                    return route('register.step2');
+            $activeRole = $user->active_role;
+            
+            // Jika belum ada active_role, ambil role pertama yang dimiliki
+            if (!$activeRole) {
+                $roles = $user->roleNames();
+                $activeRole = !empty($roles) ? $roles[0] : null;
+            }
+
+            if ($activeRole) {
+                // Cek status registrasi dari tabel pivot
+                $pivot = $user->getRolePivot($activeRole);
+                if ($pivot && $pivot->registration_step < 4) {
+                    if ($pivot->registration_step <= 2) {
+                        return route('register.step2');
+                    }
+                    return route('register.step3');
                 }
-                return route('register.step3');
+
+                // Redirect ke dashboard yang sesuai
+                if ($activeRole === 'tutor') {
+                    return route('dashboard.tutor');
+                } elseif ($activeRole === 'orangtua' || $activeRole === 'parent') {
+                    return route('dashboard.orangtua');
+                }
             }
 
-            if ($user->role === 'tutor') {
-                return route('dashboard.tutor');
-            } elseif ($user->role === 'orangtua' || $user->role === 'parent') {
-                return route('dashboard.orangtua');
-            }
-
+            // Default fallback
             return route('dashboard.siswa');
         });
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

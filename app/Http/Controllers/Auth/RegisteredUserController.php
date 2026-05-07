@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -40,17 +41,52 @@ class RegisteredUserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:siswa,tutor,orangtua,parent'],
+            'role' => ['required', 'string', 'in:siswa,tutor,orangtua'],
         ]);
 
+        $roleName = $request->role;
+
+        // Cek apakah email sudah terdaftar
+        $existingUser = User::where('email', $request->email)->first();
+
+        if ($existingUser) {
+            // Email sudah ada → arahkan user untuk login
+            // Role baru akan otomatis ditambahkan saat login
+            $loginUrl = match ($roleName) {
+                'tutor' => '/login-tutor',
+                'orangtua' => '/masuk-orang-tua',
+                default => '/masuk-siswa',
+            };
+
+            $roleLabel = match ($roleName) {
+                'tutor' => 'Tutor',
+                'orangtua' => 'Orang Tua',
+                default => 'Siswa',
+            };
+
+            if ($existingUser->hasRole($roleName)) {
+                throw ValidationException::withMessages([
+                    'email' => "Email ini sudah terdaftar sebagai {$roleLabel}. Silakan login di halaman {$roleLabel}.",
+                ]);
+            }
+
+            throw ValidationException::withMessages([
+                'email' => "Email ini sudah terdaftar. Silakan login di halaman {$roleLabel} untuk menambahkan role {$roleLabel} ke akun Anda.",
+            ]);
+        }
+
+        // Email belum terdaftar → buat akun baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'active_role' => $roleName,
         ]);
+
+        // Assign role ke user baru
+        $user->assignRole($roleName);
 
         event(new Registered($user));
 

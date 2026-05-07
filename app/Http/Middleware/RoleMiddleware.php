@@ -21,14 +21,9 @@ class RoleMiddleware
             abort(403, 'Unauthorized Access.');
         }
 
-        // Handle variations of parent role
-        $userRole = $user->role;
-        if ($userRole === 'parent' && $role === 'orangtua') {
-            $userRole = 'orangtua';
-        }
-
-        if ($userRole !== $role) {
-            abort(403, 'Unauthorized Access.');
+        // Cek apakah user memiliki role yang diminta (many-to-many)
+        if (!$user->hasRole($role)) {
+            abort(403, 'Unauthorized Access. Anda tidak memiliki akses sebagai ' . $role . '.');
         }
 
         return $next($request);

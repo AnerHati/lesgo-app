@@ -5,7 +5,7 @@ import LesGoInput from '@/Components/LesGoInput.vue'
 import { computed } from 'vue'
 
 const user = usePage().props.auth.user;
-const role = user.role;
+const role = user.active_role;
 
 const form = useForm({
     phone: '',

@@ -6,7 +6,7 @@
             <div class="hero-orb-1"></div>
             <div class="hero-orb-2"></div>
             <div class="z-10 max-w-md">
-              <h2 class="text-4xl font-black mb-3">Halo, Kenzo! <br> Siap belajar hari ini?</h2>
+              <h2 class="text-4xl font-black mb-3">Halo, {{ user?.name || 'siswa' }}! <br> Siap belajar hari ini?</h2>
               <p class="text-blue-50 font-medium mb-8 text-sm opacity-90">Pilih pelajaranmu atau tutor terbaik untuk mulai belajar.</p>
               <button type="button" class="group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-8 py-3 rounded-xl font-bold text-sm inline-flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 focus:ring-2 focus:ring-blue-100 outline-none">
                 Lihat Materi
@@ -52,11 +52,11 @@
             </div>
             <div v-if="jadwal.length > 0" class="space-y-4">
               <div v-for="j in jadwal" :key="j.id" class="flex items-center gap-4 p-3 bg-white rounded-2xl hover:bg-gray-50 border border-gray-50 transition">
-                <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-lg shrink-0">{{ j.img }}</div>
+                <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-lg shrink-0">{{ j.study_class.subject.icon }}</div>
                 <div>
-                  <h4 class="text-[13px] font-bold text-[#3B82F6] leading-none mb-1">{{ j.subject }}</h4>
-                  <p class="text-[11px] text-gray-500 font-medium">Tutor {{ j.tutor }}</p>
-                  <p class="text-[10px] text-gray-400 mt-0.5">{{ j.time }}</p>
+                  <h4 class="text-[13px] font-bold text-[#3B82F6] leading-none mb-1">{{ j.study_class.subject.name }}</h4>
+                  <p class="text-[11px] text-gray-500 font-medium">Tutor {{ j.study_class.tutor.name }}</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">{{ formatWaktu(j.start_time) }}</p>
                 </div>
               </div>
             </div>
@@ -74,11 +74,11 @@
             </div>
             <div v-if="tugas.length > 0" class="space-y-5">
               <div v-for="t in tugas" :key="t.id" class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-lg shrink-0">{{ t.icon }}</div>
+                <div class="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-lg shrink-0">{{ t.study_class.subject.icon }}</div>
                 <div>
-                  <h4 class="text-[13px] font-bold text-gray-800 leading-none mb-1">{{ t.subject }}</h4>
-                  <p class="text-[10px] text-gray-500 font-medium">{{ t.desc }}</p>
-                  <p class="text-[10px] text-gray-400 mt-1 font-bold italic">{{ t.posted }}</p>
+                  <h4 class="text-[13px] font-bold text-gray-800 leading-none mb-1">{{ t.study_class.subject.name }}</h4>
+                  <p class="text-[10px] text-gray-500 font-medium">{{ t.title }}</p>
+                  <p class="text-[10px] text-gray-400 mt-1 font-bold italic">Tenggat: {{ waktuSingkat(t.deadline) }}</p>
                 </div>
               </div>
             </div>
@@ -119,19 +119,17 @@
               :key="p.id"
               class="rounded-2xl border border-gray-100 bg-[#FAFBFC] p-5 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
             >
-              <h4 class="text-sm font-bold text-[#3B82F6] leading-tight">{{ p.subject }}</h4>
-              <p class="text-xs text-gray-600 font-medium mt-2">{{ p.topic }}</p>
-              <p class="text-[11px] text-gray-500 mt-1">Tutor {{ p.tutor }}</p>
-              <p class="text-[10px] text-gray-400 mt-0.5">{{ p.schedule }}</p>
+              <h4 class="text-sm font-bold text-[#3B82F6] leading-tight">{{ p.subject.name }}</h4>
+              <p class="text-[11px] text-gray-500 mt-1">Tutor {{ p.tutor.name }}</p>
               <div class="mt-4">
                 <div class="flex justify-between items-center text-[11px] font-bold text-gray-600 mb-1.5">
                   <span>Progres</span>
-                  <span>{{ p.percent }}%</span>
+                  <span>{{ p.progress_percentage }}%</span>
                 </div>
                 <div class="h-2 rounded-full bg-gray-200 overflow-hidden">
                   <div
                     class="h-full rounded-full bg-gradient-to-r from-[#3B82F6] to-[#0EA5E9] transition-all progress-shine"
-                    :style="{ width: `${p.percent}%` }"
+                    :style="{ width: `${p.progress_percentage}%` }"
                   />
                 </div>
               </div>
@@ -142,28 +140,24 @@
 </template>
 
 <script setup>
+const props = defineProps({
+  jadwal: Array,
+  tugas: Array,
+  progres: Array,
+  user: Object
+})
+
 defineEmits(['navigate'])
 
-const jadwal = [
-  { id: 1, subject: 'Matematika', tutor: 'Isyana Randini', time: 'Hari ini, 15:00 - 17:30', img: '👩🏼‍💼' },
-  { id: 2, subject: 'Bahasa Indonesia', tutor: 'John Doe', time: 'Jumat, 19:00 - 20:30', img: '👨🏻‍💼' },
-  { id: 3, subject: 'Bahasa Inggris', tutor: 'Isyana Randini', time: 'Minggu, 15:00 - 17:30', img: '👩🏼‍💼' },
-]
+// Helper format tanggal
+const formatWaktu = (dateString) => {
+    if(!dateString) return '';
+    return new Date(dateString).toLocaleDateString('id-ID', { weekday: 'long', hour: '2-digit', minute: '2-digit' }).replace(' pukul', ',');
+}
 
-const tugas = [
-  { id: 1, subject: 'Matematika', icon: '📐', desc: 'Transformasi Geometri', posted: '24 Menit Lalu' },
-  { id: 2, subject: 'Bahasa Indonesia', icon: '📖', desc: 'Paragraf Deduktif', posted: '1 Jam Lalu' },
-  { id: 3, subject: 'Bahasa Jepang', icon: '🇯🇵', desc: 'Huruf Hiragana', posted: '22 Jam Lalu' },
-]
-
-const progres = [
-  { id: 1, subject: 'Matematika', topic: 'Transformasi Geometri', tutor: 'Isyana Randini', schedule: 'Senin, 15:00', percent: 15, eval: 84, icon: '📐' },
-  { id: 2, subject: 'Bahasa Jepang', topic: 'Huruf Hiragana', tutor: 'Renata', schedule: 'Rabu, 10:00', percent: 65, eval: 84, icon: '🇯🇵' },
-  { id: 3, subject: 'Bahasa Inggris', topic: 'Simple Present Tense', tutor: 'Jhon Doe', schedule: 'Jumat, 16:00', percent: 40, eval: 84, icon: '🇬🇧' },
-  { id: 4, subject: 'Bahasa Indonesia', topic: 'Paragraf Deduktif', tutor: 'Jonathan', schedule: 'Kamis, 14:00', percent: 95, eval: 84, icon: '🇮🇩' },
-  { id: 5, subject: 'Matematika', topic: 'Transformasi Geometri', tutor: 'Isyana Randini', schedule: 'Senin, 15:00', percent: 15, eval: 84, icon: '📐' },
-  { id: 6, subject: 'Bahasa Jepang', topic: 'Huruf Hiragana', tutor: 'Renata', schedule: 'Rabu, 10:00', percent: 65, eval: 84, icon: '🇯🇵' },
-  { id: 7, subject: 'Bahasa Inggris', topic: 'Simple Present Tense', tutor: 'Jhon Doe', schedule: 'Jumat, 16:00', percent: 40, eval: 84, icon: '🇬🇧' },
-  { id: 8, subject: 'Bahasa Indonesia', topic: 'Paragraf Deduktif', tutor: 'Jonathan', schedule: 'Kamis, 14:00', percent: 95, eval: 84, icon: '🇮🇩' },
-]
+// Helper format tanggal singkat untuk tugas
+const waktuSingkat = (dateString) => {
+    if(!dateString) return '';
+    return new Date(dateString).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'});
+}
 </script>

@@ -6,7 +6,7 @@
     @navigate="goNav"
   >
     <div class="space-y-6">
-      <Beranda v-if="activeSection === 'beranda'" @navigate="goNav" />
+      <Beranda v-if="activeSection === 'beranda'" @navigate="goNav" :pesanan="props.pesananMasuk" :kelasAktif="props.kelasAktif" :jadwal="props.jadwalMengajar"/>
       <CariSiswa v-else-if="activeSection === 'cari_siswa'" />
       <Siswa v-else-if="activeSection === 'siswa_saya'" />
       <Kelas v-else-if="activeSection === 'kelas_saya'" />
@@ -41,6 +41,14 @@ import Keuangan from './Keuangan.vue'
 import Pesan from './Pesan.vue'
 import Ulasan from './Ulasan.vue'
 import Pengaturan from './Pengaturan.vue'
+
+const props = defineProps({
+  pesananMasuk: { type: Array, default: () => [] },
+  kelasAktif: { type: Array, default: () => [] },
+  jadwalMengajar: { type: Array, default: () => [] }, 
+  user: { type: Object, default: () => ({}) }
+})
+
 
 const activeSection = ref('beranda')
 

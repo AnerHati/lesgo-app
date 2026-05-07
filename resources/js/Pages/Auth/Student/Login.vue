@@ -111,6 +111,7 @@ const form = useForm({
   email: '',
   password: '',
   remember: false,
+  intended_role: 'siswa',
 })
 
 const submit = () => {

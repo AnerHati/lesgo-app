@@ -94,6 +94,7 @@ const form = useForm({
   email: '',
   password: '',
   remember: false,
+  intended_role: 'tutor',
 })
 
 const submit = () => {

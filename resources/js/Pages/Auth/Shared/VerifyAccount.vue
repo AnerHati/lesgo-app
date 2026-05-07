@@ -4,7 +4,7 @@ import LesGoButton from '@/Components/LesGoButton.vue'
 import { ref, computed } from 'vue'
 
 const user = usePage().props.auth.user;
-const role = user.role;
+const role = user.active_role;
 
 const form = useForm({
     ktp: null,

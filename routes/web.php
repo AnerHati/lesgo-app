@@ -7,6 +7,7 @@ use App\Http\Controllers\TutorDashboardController;
 use App\Http\Controllers\ParentDashboardController;
 use App\Http\Controllers\Auth\RegisterStepController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -59,7 +60,16 @@ Route::middleware('auth')->group(function () {
 
     // Registration Steps (user is logged in but not fully registered yet)
     Route::get('/lengkapi-profil', function () {
-        if (Auth::user()->registration_step >= 4) return redirect('/');
+        $user = Auth::user();
+        $activeRole = $user->active_role;
+
+        if ($activeRole) {
+            $pivot = $user->getRolePivot($activeRole);
+            if ($pivot && $pivot->registration_step >= 4) {
+                return redirect('/');
+            }
+        }
+
         return Inertia::render('Auth/Shared/CompleteProfile');
     })->name('register.step2');
 
@@ -67,8 +77,21 @@ Route::middleware('auth')->group(function () {
         ->name('register.step2.store');
 
     Route::get('/verifikasi', function () {
-        if (Auth::user()->registration_step < 3) return redirect()->route('register.step2');
-        if (Auth::user()->registration_step >= 4) return redirect('/');
+        $user = Auth::user();
+        $activeRole = $user->active_role;
+
+        if ($activeRole) {
+            $pivot = $user->getRolePivot($activeRole);
+            if ($pivot) {
+                if ($pivot->registration_step < 3) {
+                    return redirect()->route('register.step2');
+                }
+                if ($pivot->registration_step >= 4) {
+                    return redirect('/');
+                }
+            }
+        }
+
         return Inertia::render('Auth/Shared/VerifyAccount');
     })->name('register.step3');
 
@@ -83,12 +106,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Dashboard routes
-    Route::middleware('role:siswa')->group(function () {
+       Route::middleware('role:siswa')->group(function () {
         Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
+        Route::post('/booking-tutor', [StudentDashboardController::class, 'storeBooking'])->name('booking.tutor');
     });
 
     Route::middleware('role:tutor')->group(function () {
-        Route::get('/dashboard-tutor', TutorDashboardController::class)->name('dashboard.tutor');
+        Route::get('/dashboard-tutor', [TutorDashboardController::class, 'index'])->name('dashboard.tutor');
+        
+        // Endpoint baru untuk Menerima dan Menolak Pesanan
+        Route::post('/tutor/booking/{id}/accept', [TutorDashboardController::class, 'acceptBooking'])->name('tutor.booking.accept');
+        Route::post('/tutor/booking/{id}/reject', [TutorDashboardController::class, 'rejectBooking'])->name('tutor.booking.reject');
+        
         Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
             ->name('study-classes.materials.store');
     });
@@ -96,4 +125,24 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:orangtua')->group(function () {
         Route::get('/dashboard-orang-tua', [ParentDashboardController::class, 'index'])->name('dashboard.orangtua');
     });
+
+    // ── Switch Role ──────────────────────────────────────────────────
+    Route::post('/switch-role', function (\Illuminate\Http\Request $request) {
+        $request->validate(['role' => 'required|string|in:siswa,tutor,orangtua']);
+
+        $user = Auth::user();
+        $newRole = $request->role;
+
+        if (!$user->hasRole($newRole)) {
+            return back()->withErrors(['role' => 'Anda tidak memiliki role tersebut.']);
+        }
+
+        $user->switchRole($newRole);
+
+        return match ($newRole) {
+            'tutor' => redirect()->route('dashboard.tutor'),
+            'orangtua' => redirect()->route('dashboard.orangtua'),
+            default => redirect()->route('dashboard.siswa'),
+        };
+    })->name('switch.role');
 });

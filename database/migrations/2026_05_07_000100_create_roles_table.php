@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('study_classes', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('topic')->nullable();
-            $table->string('tutor_name')->nullable();
+            $table->string('name')->unique();        // siswa, tutor, orangtua
+            $table->string('display_name');            // Siswa, Tutor, Orang Tua
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('study_classes');
+        Schema::dropIfExists('roles');
     }
 };

@@ -6,14 +6,17 @@
     @navigate="goNav"
   >
     <div class="space-y-6">
-      <Beranda v-if="activeSection === 'beranda'" @navigate="goNav" />
-      <Kelas v-else-if="activeSection === 'kelas'" :japanese-class-data="japaneseClassData" />
-      <Tugas v-else-if="activeSection === 'tugas'" />
-      <Tutor v-else-if="activeSection === 'tutor'" @navigate="goNav" />
-      <CariTutor v-else-if="activeSection === 'cari'" @navigate="goNav" />
-      <Pesan v-else-if="activeSection === 'pesan'" @navigate="goNav" />
-      <Progres v-else-if="activeSection === 'progres'" />
-      <Pengaturan v-else-if="activeSection === 'pengaturan'" />
+     <Beranda 
+  v-if="activeSection === 'beranda'" 
+  @navigate="goNav" 
+  :jadwal="props.jadwal"
+  :tugas="props.tugas"
+  :progres="props.progresKelas"
+  :user="props.user"
+/>
+<CariTutor v-else-if="activeSection === 'cari'" @navigate="goNav" :tutors="props.tutors" />
+
+
     </div>
   </LesGoLayout>
 </template>
@@ -30,7 +33,15 @@ import Pesan from './Pesan.vue'
 import Progres from './Progres.vue'
 import Pengaturan from './Pengaturan.vue'
 
-const props = defineProps({
+  
+
+
+  const props = defineProps({
+  progresKelas: { type: Array, default: () => [] },
+  jadwal: { type: Array, default: () => [] },
+  tugas: { type: Array, default: () => [] },
+  user: { type: Object, default: () => ({}) },
+  tutors: { type: Array, default: () => [] },
   japaneseClassData: { type: Object, default: null },
 })
 

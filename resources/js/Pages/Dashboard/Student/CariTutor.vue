@@ -41,7 +41,7 @@
               </button>
             </div>
 
-            <!-- Tutors Grid -->
+                        <!-- Tutors Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <article
                 v-for="(tutor, index) in filteredCariTutor"
@@ -52,12 +52,12 @@
                 <!-- Top Row: Avatar & Info -->
                 <div class="flex items-start gap-5 mb-4">
                   <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-3xl shrink-0 overflow-hidden border border-gray-100 shadow-inner">
-                    <img :src="`https://ui-avatars.com/api/?name=${tutor.name.replace(' ', '+')}&background=eff6ff&color=2563eb`" alt="Avatar" class="w-full h-full object-cover" />
+                    <img :src="`https://ui-avatars.com/api/?name=${tutor.name.replace(/ /g, '+')}&background=eff6ff&color=2563eb`" alt="Avatar" class="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h3 class="text-lg font-black text-[#2563EB] leading-tight">{{ tutor.name }}</h3>
-                    <p class="text-xs font-bold text-gray-500 mt-0.5">{{ tutor.subject }}</p>
-                    <p class="text-[11px] text-gray-400 mt-1 font-semibold flex items-center gap-1">🎓 {{ tutor.target }}</p>
+                    <p class="text-xs font-bold text-gray-500 mt-0.5">{{ tutor.subjects.map(s => s.name).join(', ') }}</p>
+                    <p class="text-[11px] text-gray-400 mt-1 font-semibold flex items-center gap-1">🎓 Tutor Ahli</p>
                     <div class="flex items-center gap-1 mt-1.5 text-xs font-bold">
                       <span class="text-amber-400 text-sm tracking-widest">⭐⭐⭐⭐⭐</span>
                       <span class="text-gray-600 ml-1">{{ tutor.rating }}</span>
@@ -73,7 +73,7 @@
                 <!-- Bottom Row: Button -->
                 <div class="mt-auto">
                   <button
-                    @click="cariView = 'profil'"
+                    @click="viewTutor(tutor)"
                     type="button"
                     class="w-full py-2.5 rounded-xl text-sm font-bold border-2 border-[#2563EB] text-[#2563EB] hover:bg-blue-50 transition"
                   >
@@ -82,6 +82,7 @@
                 </div>
               </article>
             </div>
+
 
             <!-- Pagination (Mock) -->
             <div class="flex justify-center items-center gap-2 mt-8 pb-4">
@@ -94,9 +95,9 @@
             </div>
             </template>
 
-            <template v-else-if="cariView === 'profil'">
+                        <template v-else-if="cariView === 'profil'">
               <!-- Profil View -->
-              <div class="animate-fade-in">
+              <div class="animate-fade-in" v-if="selectedTutor">
                 <!-- Back Button -->
                 <div class="mb-6">
                   <button @click="cariView = 'semua'" type="button" class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-bold text-sm inline-flex items-center gap-2 hover:bg-gray-50 transition shadow-sm">
@@ -110,19 +111,19 @@
                     <!-- Header -->
                     <div class="flex flex-col md:flex-row gap-8 items-start">
                       <div class="w-32 h-32 rounded-full overflow-hidden bg-blue-50 shrink-0 border-4 border-white shadow-md">
-                        <img src="https://ui-avatars.com/api/?name=Isyana+Randini&background=eff6ff&color=2563eb&size=256" alt="Isyana Randini" class="w-full h-full object-cover">
+                        <img :src="`https://ui-avatars.com/api/?name=${selectedTutor.name.replace(/ /g, '+')}&background=eff6ff&color=2563eb&size=256`" :alt="selectedTutor.name" class="w-full h-full object-cover">
                       </div>
                       <div class="pt-2">
-                        <h2 class="text-3xl font-black text-gray-900 mb-2">Isyana Randini</h2>
+                        <h2 class="text-3xl font-black text-gray-900 mb-2">{{ selectedTutor.name }}</h2>
                         <div class="flex items-center gap-1 mb-3">
                           <span class="text-amber-400 text-lg">⭐⭐⭐⭐⭐</span>
                         </div>
                         <div class="space-y-2">
                           <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="w-5 text-center text-lg">📚</span> Matematika
+                            <span class="w-5 text-center text-lg">📚</span> {{ selectedTutor.subjects.map(s => s.name).join(', ') }}
                           </p>
                           <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="w-5 text-center text-lg">📍</span> Denpasar Selatan
+                            <span class="w-5 text-center text-lg">📍</span> Tersedia Area Lokal / Online
                           </p>
                         </div>
                       </div>
@@ -131,7 +132,7 @@
                     <!-- Description Box -->
                     <div class="mt-8 bg-[#F5F7FF] rounded-2xl p-5">
                       <p class="text-sm text-gray-600 leading-relaxed font-medium">
-                        <span class="font-bold text-gray-800">Tutor berpengalaman mengajar SD-SMA.</span> Spesialis dalam aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!
+                        {{ selectedTutor.description }}
                       </p>
                     </div>
 
@@ -144,113 +145,40 @@
                         </h4>
                         <div class="ml-7 space-y-2">
                           <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="text-gray-400">🎓</span> SD - SMA
+                            <span class="text-gray-400">🎓</span> Semua Jenjang
                           </p>
-                          <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="text-gray-400">📚</span> Matematika
-                          </p>
-                        </div>
-                      </div>
-
-                      <!-- Pengalaman -->
-                      <div>
-                        <h4 class="flex items-center gap-2 text-base font-bold text-gray-900 mb-3">
-                          <span class="text-emerald-500 text-xl">☑</span> Pengalaman Mengajar
-                        </h4>
-                        <div class="ml-7">
-                          <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="text-gray-400">⏱</span> 10 Tahun mengajar matematika
-                          </p>
-                        </div>
-                      </div>
-
-                      <!-- Preferensi Lokasi -->
-                      <div>
-                        <h4 class="flex items-center gap-2 text-base font-bold text-gray-900 mb-3">
-                          <span class="text-emerald-500 text-xl">☑</span> Preferensi Lokasi Mengajar
-                        </h4>
-                        <div class="ml-7 space-y-2">
-                          <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="text-gray-400">📍</span> Datangi rumah siswa sekitar Denpasar Selatan
-                          </p>
-                          <p class="flex items-center gap-2 text-sm font-bold text-gray-500">
-                            <span class="text-gray-400">💻</span> Online zoom/Google Meet
+                          <p v-for="sub in selectedTutor.subjects" :key="sub.id" class="flex items-center gap-2 text-sm font-bold text-gray-500">
+                            <span class="text-gray-400">{{ sub.icon || '📚' }}</span> {{ sub.name }}
                           </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Right Column: Map & Pricing -->
+                  <!-- Right Column: Pricing -->
                   <div class="lg:col-span-1 space-y-6">
-                    <!-- Map Card -->
-                    <div class="bg-white rounded-[24px] border border-gray-200 p-4 shadow-sm">
-                      <div class="relative w-full h-56 rounded-xl overflow-hidden bg-gray-100 mb-4 border border-gray-100">
-                        <!-- OpenStreetMap -->
-                        <iframe 
-                          class="absolute inset-0 w-full h-full"
-                          frameborder="0" 
-                          scrolling="no" 
-                          marginheight="0" 
-                          marginwidth="0" 
-                          src="https://www.openstreetmap.org/export/embed.html?bbox=115.18%2C-8.72%2C115.28%2C-8.62&amp;layer=mapnik&amp;marker=-8.670%2C115.230">
-                        </iframe>
-                        <!-- Map Overlay (Pin) -->
-                        <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                           <div class="w-48 h-48 rounded-full border-[4px] border-white shadow-[0_0_0_9999px_rgba(255,255,255,0.4)] flex items-center justify-center relative overflow-hidden">
-                              <svg class="w-16 h-16 text-red-600 drop-shadow-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                              </svg>
-                           </div>
-                        </div>
-                        <!-- Lihat Lokasi Button -->
-                        <button @click="cariView = 'lokasi_detail'" class="absolute bottom-3 right-3 bg-[#2563EB] text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:bg-blue-700 transition flex items-center gap-1">
-                          📍 Lihat Lokasi
-                        </button>
-                      </div>
-                      <p class="text-sm font-bold text-gray-700 flex items-center gap-2 px-2">
-                        <span class="text-gray-400 text-lg">⏳</span> Sekitar 2 km dari rumah Anda
-                      </p>
-                    </div>
-
                     <!-- Pricing Card -->
                     <div class="bg-white rounded-[24px] border border-gray-200 p-6 shadow-sm">
                       <h3 class="text-lg font-black text-gray-900 mb-4">Biaya Mengajar</h3>
                       <div class="space-y-0">
-                        <!-- Row 1 -->
-                        <div class="flex justify-between items-center py-4 border-b border-gray-100">
-                          <span class="text-sm font-bold text-gray-800">Privat di rumah</span>
+                        <div v-for="sub in selectedTutor.subjects" :key="sub.id" class="flex justify-between items-center py-4 border-b border-gray-100 last:border-0">
+                          <span class="text-sm font-bold text-gray-800">{{ sub.name }}</span>
                           <div class="text-right">
                             <span class="text-[11px] font-bold text-gray-400 block mb-0.5">1 Jam</span>
-                            <span class="text-sm font-black text-gray-900">Rp100.000</span>
-                          </div>
-                        </div>
-                        <!-- Row 2 -->
-                        <div class="flex justify-between items-center py-4 border-b border-gray-100">
-                          <span class="text-sm font-bold text-gray-800">Grup (2-4 Orang)</span>
-                          <div class="text-right">
-                            <span class="text-[11px] font-bold text-gray-400 block mb-0.5">1 Jam/orang</span>
-                            <span class="text-sm font-black text-gray-900">Rp75.000</span>
-                          </div>
-                        </div>
-                        <!-- Row 3 -->
-                        <div class="flex justify-between items-center py-4">
-                          <span class="text-sm font-bold text-gray-800">Online via Zoom/Meet</span>
-                          <div class="text-right">
-                            <span class="text-[11px] font-bold text-gray-400 block mb-0.5">1 Jam</span>
-                            <span class="text-sm font-black text-gray-900">Rp80.000</span>
+                            <span class="text-sm font-black text-gray-900">Rp{{ sub.price.toLocaleString('id-ID') }}</span>
                           </div>
                         </div>
                       </div>
 
-                      <button type="button" class="mt-4 w-full bg-[#2563EB] text-white py-3.5 rounded-xl text-sm font-bold shadow-sm hover:bg-blue-700 transition">
-                        Hubungi Tutor
+                      <button @click="bookTutor" type="button" class="mt-4 w-full bg-[#2563EB] text-white py-3.5 rounded-xl text-sm font-bold shadow-sm hover:bg-blue-700 transition">
+                        Pesan Tutor
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             </template>
+
 
             <template v-else-if="cariView === 'lokasi'">
               <!-- Map Radius Search View -->
@@ -690,7 +618,7 @@
 
                   <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
                     <p class="text-xs font-bold text-gray-500">Kamu bisa membayar setelah jadwal dikonfirmasi oleh tutor.</p>
-                    <button @click="cariView = 'menunggu_konfirmasi'" type="button" class="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-sm hover:bg-blue-700 transition w-full sm:w-auto">
+                    <button @click="submitBooking" type="button" class="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-sm shadow-sm hover:bg-blue-700 transition w-full sm:w-auto">
                       Kirim Permintaan
                     </button>
                   </div>
@@ -870,7 +798,7 @@
                       </label>
                     </div>
 
-                    <button type="button" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-blue-100" @click="showPaymentModal = false">
+                    <button type="button" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-blue-100" @click="submitBooking">
                       Bayar Sekarang
                     </button>
                   </div>
@@ -882,6 +810,11 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { router } from '@inertiajs/vue3'
+
+const props = defineProps({
+  tutors: { type: Array, default: () => [] }
+})
 
 const emit = defineEmits(['navigate'])
 
@@ -890,29 +823,56 @@ const cariTutorFilter = ref('Semua')
 const cariView = ref('semua')
 const showPaymentModal = ref(false)
 const selectedPaymentMethod = ref('qris')
-const cariTutorCategories = ['Semua', 'Fisika', 'Matematika', 'Bahasa Inggris', 'Informatika']
+const selectedPackage = ref('4x')
+const selectedMethod = ref('rumah')
 
-const cariTutorItems = [
-  { id: 1, name: 'Isyana Randini', avatar: '👩🏻', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 1.2, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 2, name: 'James Nathan', avatar: '👨🏼', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 2.5, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 3, name: 'John Doe', avatar: '👨🏻', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 3.1, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 4, name: 'Ananta Aldora', avatar: '👨🏽', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 4.0, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 5, name: 'Isyana Randini', avatar: '👩🏻', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 5.2, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 6, name: 'James Nathan', avatar: '👨🏼', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 6.8, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 7, name: 'Isyana Randini', avatar: '👩🏻', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 8.5, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-  { id: 8, name: 'John Doe', avatar: '👨🏻', subject: 'Matematika', target: 'Tutor SD - SMA', rating: 4.7, distance: 10.1, description: 'Tutor matematika berpengalaman mengajar aljabar, geometri, dan trigonometri. Sabar dan membuat belajar jadi menyenangkan!' },
-]
+// Kategori dinamis berdasarkan mata pelajaran tutor yang tersedia
+const cariTutorCategories = computed(() => {
+  const subjects = new Set(['Semua']);
+  props.tutors.forEach(t => t.subjects.forEach(s => subjects.add(s.name)));
+  return Array.from(subjects);
+});
+
+// Menyimpan tutor yang diklik untuk dilihat detailnya
+const selectedTutor = ref(null);
 
 const filteredCariTutor = computed(() => {
-  let items = [...cariTutorItems]
-  if (cariTutorFilter.value !== 'Semua') items = items.filter(item => item.subject === cariTutorFilter.value)
+  let items = [...props.tutors]
+  if (cariTutorFilter.value !== 'Semua') {
+      items = items.filter(item => item.subjects.some(s => s.name === cariTutorFilter.value))
+  }
   if (cariTutorQuery.value) {
     const q = cariTutorQuery.value.toLowerCase()
-    items = items.filter(item => item.name.toLowerCase().includes(q) || item.subject.toLowerCase().includes(q))
+    items = items.filter(item => 
+        item.name.toLowerCase().includes(q) || 
+        item.subjects.some(s => s.name.toLowerCase().includes(q))
+    )
   }
-  if (cariView.value === 'terdekat') items.sort((a, b) => a.distance - b.distance)
   return items
 })
+
+function viewTutor(tutor) {
+    selectedTutor.value = tutor;
+    cariView.value = 'profil';
+}
+
+function bookTutor() {
+    cariView.value = 'pesan_tutor';
+}
+
+function submitBooking() {
+    router.post('/booking-tutor', {
+        tutor_id: selectedTutor.value.id,
+        subject_id: selectedTutor.value.subjects[0].id, 
+        metode_belajar: selectedMethod.value,
+        paket_mengajar: selectedPackage.value
+    }, {
+        onSuccess: () => {
+            showPaymentModal.value = false;
+            cariView.value = 'menunggu_konfirmasi';
+        }
+    });
+}
 
 function goNav(id) { emit('navigate', id) }
 </script>

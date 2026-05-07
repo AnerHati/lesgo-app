@@ -17,11 +17,23 @@ class RegisterStepController extends Controller
         ]);
 
         $user = Auth::user();
+        $activeRole = $user->active_role;
+
+        // Update data umum user
         $user->update([
             'phone' => $request->phone,
             'address' => $request->address,
-            'registration_step' => 3,
         ]);
+
+        // Update registration_step di pivot role_user
+        if ($activeRole) {
+            $role = $user->roles()->where('name', $activeRole)->first();
+            if ($role) {
+                $user->roles()->updateExistingPivot($role->id, [
+                    'registration_step' => 3,
+                ]);
+            }
+        }
 
         return redirect()->route('register.step3');
     }
@@ -34,6 +46,7 @@ class RegisterStepController extends Controller
         ]);
 
         $user = Auth::user();
+        $activeRole = $user->active_role;
 
         $ktpPath = $request->file('ktp')->store('verifications/ktp', 'public');
         
@@ -42,14 +55,20 @@ class RegisterStepController extends Controller
             $ijazahPath = $request->file('ijazah')->store('verifications/ijazah', 'public');
         }
 
-        $user->update([
-            'ktp_path' => $ktpPath,
-            'ijazah_path' => $ijazahPath,
-            'registration_step' => 4, // Completed
-            'is_verified' => false, // Waiting for admin
-        ]);
+        // Update di pivot role_user
+        if ($activeRole) {
+            $role = $user->roles()->where('name', $activeRole)->first();
+            if ($role) {
+                $user->roles()->updateExistingPivot($role->id, [
+                    'ktp_path' => $ktpPath,
+                    'ijazah_path' => $ijazahPath,
+                    'registration_step' => 4, // Completed
+                    'is_verified' => false,    // Waiting for admin
+                ]);
+            }
+        }
 
-        $role = $user->role;
+        $roleName = $activeRole;
 
         // Log out the user after completing registration steps
         Auth::guard('web')->logout();
@@ -57,9 +76,9 @@ class RegisterStepController extends Controller
         $request->session()->regenerateToken();
 
         // Final redirect to login page based on role
-        if ($role === 'tutor') {
+        if ($roleName === 'tutor') {
             return redirect('/login-tutor')->with('status', 'Pendaftaran selesai! Silakan masuk dengan akun Anda.');
-        } elseif ($role === 'orangtua' || $role === 'parent') {
+        } elseif ($roleName === 'orangtua') {
             return redirect('/masuk-orang-tua')->with('status', 'Pendaftaran selesai! Silakan masuk dengan akun Anda.');
         }
 

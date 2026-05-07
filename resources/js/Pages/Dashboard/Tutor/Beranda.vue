@@ -15,50 +15,65 @@
               </div>
               <div class="absolute right-6 lg:right-10 bottom-0 w-40 h-40 lg:w-48 lg:h-48 opacity-90 hidden sm:block animate-float">
                 <span class="text-[110px]">👨🏻‍🏫</span>
-              </div>
+              </div>lu ada 
             </div>
 
-            <!-- Notifikasi -->
+             <!-- Notifikasi Pesanan Masuk -->
             <div class="lg:col-span-4 bg-white rounded-[32px] p-6 border border-gray-100 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 animate-fade-in-delay-1">
               <div class="flex justify-between items-center mb-6">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">🔔 Notifikasi</h3>
-                <a href="#" class="text-xs text-gray-400 font-bold hover:text-blue-600 transition">Lihat Semua</a>
+                <h3 class="font-bold text-gray-900 flex items-center gap-2">🔔 Pesanan Masuk</h3>
+                <span v-if="props.pesanan.length > 0" class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-lg">{{ props.pesanan.length }} Pesanan</span>
               </div>
               <div class="space-y-5">
-                <div v-for="n in notifikasi" :key="n.id" class="flex gap-4 items-start">
-                  <div class="w-10 h-10 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-inner text-blue-600 rounded-xl flex items-center justify-center text-lg shrink-0">{{ n.icon }}</div>
-                  <div>
-                    <p class="text-[13px] font-bold text-gray-800 leading-tight">{{ n.title }}</p>
-                    <p class="text-[11px] text-gray-500 mt-1">{{ n.desc }}</p>
-                    <p class="text-[10px] text-blue-500 font-bold mt-1">{{ n.time }}</p>
+                <!-- Jika kosong -->
+                <div v-if="props.pesanan.length === 0" class="text-center py-6 text-gray-400 font-medium text-sm border-2 border-dashed border-gray-100 rounded-2xl">
+                  Belum ada pesanan masuk.
+                </div>
+                <!-- Looping Pesanan -->
+                <div v-for="n in props.pesanan" :key="n.id" class="flex flex-col gap-3 p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                  <div class="flex gap-3 items-start">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-[#0EA5E9] shadow-md text-white rounded-xl flex items-center justify-center text-lg shrink-0">{{ n.subject.icon || '🆕' }}</div>
+                    <div>
+                      <p class="text-[13px] font-black text-gray-900 leading-tight">Siswa: {{ n.student.name }}</p>
+                      <p class="text-[11px] text-gray-600 font-medium mt-1">Mempelajari {{ n.subject.name }}</p>
+                      <p class="text-[10px] text-blue-600 font-bold mt-1 bg-white px-2 py-0.5 rounded-md inline-block border border-blue-100">{{ n.paket_mengajar }} | {{ n.metode_belajar }}</p>
+                    </div>
+                  </div>
+                  <!-- Action Buttons -->
+                  <div class="flex gap-2 w-full mt-2">
+                    <button @click="terimaPesanan(n.id)" type="button" class="flex-1 bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-sm transition-colors active:scale-95">Terima</button>
+                    <button @click="tolakPesanan(n.id)" type="button" class="flex-1 bg-white hover:bg-red-50 text-red-500 border border-red-200 text-xs font-bold py-2.5 rounded-xl shadow-sm transition-colors active:scale-95">Tolak</button>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
 
           <!-- Row 2: Siswa Terdekat + Jadwal Mengajar + Penghasilan -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Siswa Terdekat -->
+                       <!-- Siswa Saya -->
             <div class="lg:col-span-4 bg-white rounded-[32px] p-6 border border-gray-100 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 animate-slide-up">
               <div class="flex justify-between items-center mb-5">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">📍 Siswa Terdekat</h3>
-                <a href="#" class="text-xs text-gray-400 font-bold hover:text-blue-600 transition">Lihat Semua</a>
+                <h3 class="font-bold text-gray-900 flex items-center gap-2">👨‍🎓 Siswa Saya</h3>
+                <a href="#" @click.prevent="$emit('navigate', 'siswa_saya')" class="text-xs text-gray-400 font-bold hover:text-blue-600 transition">Lihat Semua</a>
               </div>
               <div class="space-y-4">
-                <div v-for="s in siswaDekat" :key="s.id" class="flex items-center justify-between gap-3">
+                <div v-if="props.kelasAktif.length === 0" class="text-center py-4 text-gray-400 text-xs">Belum ada siswa aktif.</div>
+                
+                <!-- Looping dari data kelasAktif asli -->
+                <div v-for="k in props.kelasAktif" :key="'siswa-'+k.id" class="flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3 min-w-0">
                     <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-lg shrink-0 overflow-hidden">
-                      <img :src="`https://ui-avatars.com/api/?name=${s.name.replace(' ','+')}&background=f3f4f6&color=4b5563&size=80`" class="w-full h-full object-cover">
+                      <img :src="`https://ui-avatars.com/api/?name=${k.student.name.replace(' ','+')}&background=f3f4f6&color=4b5563&size=80`" class="w-full h-full object-cover">
                     </div>
                     <div class="min-w-0">
-                      <h4 class="text-[13px] font-bold text-gray-800 leading-none truncate">{{ s.name }}</h4>
-                      <p class="text-[10px] text-gray-400 mt-1">{{ s.distance }} dari alamatmu</p>
-                      <p class="text-[10px] text-gray-400">{{ s.schedule }}</p>
+                      <h4 class="text-[13px] font-bold text-gray-800 leading-none truncate">{{ k.student.name }}</h4>
+                      <p class="text-[10px] text-gray-500 mt-1">{{ k.subject.name }} ({{ k.paket_mengajar }})</p>
                     </div>
                   </div>
-                  <button type="button" class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-[#3B82F6] text-white hover:bg-blue-700 transition shadow-sm">
-                    Ambil Siswa
+                  <button type="button" @click="$emit('navigate', 'kelas_saya')" class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold bg-[#3B82F6] text-white hover:bg-blue-700 transition shadow-sm">
+                    Lihat Kelas
                   </button>
                 </div>
               </div>
@@ -68,17 +83,20 @@
             <div class="lg:col-span-4 bg-white rounded-[32px] p-6 border border-gray-100 shadow-sm flex flex-col hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 animate-slide-up-delay-1">
               <div class="flex justify-between items-center mb-5">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2">📅 Jadwal Mengajar</h3>
-                <a href="#" class="text-xs text-gray-400 font-bold hover:text-blue-600 transition">Lihat Semua</a>
+                <a href="#" @click.prevent="$emit('navigate', 'jadwal')" class="text-xs text-gray-400 font-bold hover:text-blue-600 transition">Lihat Semua</a>
               </div>
               <div class="space-y-4">
-                <div v-for="j in jadwalMengajar" :key="j.id" class="flex items-center gap-3">
+                <div v-if="props.jadwal.length === 0" class="text-center py-4 text-gray-400 text-xs">Belum ada jadwal terdekat.</div>
+                
+                <!-- Looping dari data jadwal asli -->
+                <div v-for="j in props.jadwal" :key="'jadwal-'+j.id" class="flex items-center gap-3">
                   <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-lg shrink-0 overflow-hidden">
-                    <img :src="`https://ui-avatars.com/api/?name=${j.siswa.replace(' ','+')}&background=f3f4f6&color=4b5563&size=80`" class="w-full h-full object-cover">
+                    <img :src="`https://ui-avatars.com/api/?name=${j.study_class.student.name.replace(' ','+')}&background=f3f4f6&color=4b5563&size=80`" class="w-full h-full object-cover">
                   </div>
                   <div>
-                    <h4 class="text-[13px] font-bold text-[#3B82F6] leading-none">{{ j.siswa }}</h4>
-                    <p class="text-[10px] text-gray-500 font-medium mt-1">{{ j.mapel }}</p>
-                    <p class="text-[10px] text-gray-400 mt-0.5">{{ j.waktu }}</p>
+                    <h4 class="text-[13px] font-bold text-[#3B82F6] leading-none">{{ j.study_class.student.name }}</h4>
+                    <p class="text-[10px] text-gray-500 font-medium mt-1">{{ j.study_class.subject.name }}</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">{{ formatTanggal(j.start_time) }}</p>
                   </div>
                 </div>
               </div>
@@ -149,6 +167,7 @@
 
 </div>
 </template>
+
 <script setup>
 import { ref } from 'vue'
 const emit = defineEmits(['navigate'])
@@ -173,4 +192,37 @@ const performaSiswa = [
   { id: 3, name: 'Kevin H', mapel: 'Matematika-SMP', percent: 15 },
   { id: 4, name: 'Kevin H', mapel: 'Matematika-SMP', percent: 15 },
 ]
+
+
+import { router } from '@inertiajs/vue3'
+
+const props = defineProps({
+  pesanan: { type: Array, default: () => [] },
+  kelasAktif: { type: Array, default: () => [] },
+  jadwal: { type: Array, default: () => [] } // <-- Tambahkan ini
+})
+
+// Fungsi untuk merapikan tanggal (contoh: "Min, 14 Mei 15.00")
+function formatTanggal(isoString) {
+    if(!isoString) return '';
+    const d = new Date(isoString);
+    return d.toLocaleDateString('id-ID', { 
+        weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' 
+    });
+}
+
+
+function terimaPesanan(id) {
+    if(confirm('Apakah Anda yakin ingin Menerima pesanan ini?')) {
+        router.post(`/tutor/booking/${id}/accept`);
+    }
+}
+
+function tolakPesanan(id) {
+    if(confirm('Apakah Anda yakin ingin Menolak pesanan ini?')) {
+        router.post(`/tutor/booking/${id}/reject`);
+    }
+}
+
 </script>
+

@@ -99,11 +99,12 @@ function handleLogout() {
 
                 <div class="flex items-center gap-4 ml-4 lg:ml-6 shrink-0">
                     <div class="text-right hidden sm:block leading-tight">
-                        <p class="text-[14px] font-bold text-gray-800">Sarah Ambarawati</p>
-                        <p class="text-[12px] text-gray-400 font-medium">Tutor</p>
+                        <p class="text-[14px] font-bold text-gray-800">{{ user?.name ?? 'User' }}</p>
+                        <p class="text-[12px] text-gray-400 font-medium capitalize">{{ user?.active_role ?? 'Siswa' }}</p>
                     </div>
-                    <div class="w-12 h-12 rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center shrink-0">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150" class="w-full h-full object-cover" />
+                    <div class="w-12 h-12 rounded-full border-2 border-white shadow-sm overflow-hidden flex items-center justify-center bg-gradient-to-br from-blue-400 to-emerald-400 shrink-0">
+                        <img v-if="user?.profile_photo_path" :src="user.profile_photo_path" class="w-full h-full object-cover" />
+                        <span v-else class="text-white font-bold text-lg">{{ user?.name?.charAt(0)?.toUpperCase() ?? 'U' }}</span>
                     </div>
                 </div>
             </header>
