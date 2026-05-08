@@ -9,9 +9,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
+    use SoftDeletes;
+
+    public function writtenReviews()
+{
+    return $this->hasMany(Review::class, 'student_id');
+}
+
+public function receivedReviews()
+{
+    return $this->hasMany(Review::class, 'tutor_id');
+}
+
+
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -28,6 +43,8 @@ class User extends Authenticatable
         'address',
         'profile_photo_path',
         'active_role',
+        'latitude',
+        'longitude',
     ];
 
     /**
@@ -190,5 +207,8 @@ class User extends Authenticatable
                     ->withPivot('price_per_hour')
                     ->withTimestamps();
     }
+
+
+
 
 }

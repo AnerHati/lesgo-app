@@ -29,11 +29,22 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $unreadSendersCount = 0;
+
+        if ($user) {
+            $unreadSendersCount = \App\Models\Message::where('receiver_id', $user->id)
+                ->where('is_read', false)
+                ->distinct('sender_id')
+                ->count('sender_id');
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
+            'unreadSendersCount' => $unreadSendersCount,
             'status' => session('status'),
         ];
     }

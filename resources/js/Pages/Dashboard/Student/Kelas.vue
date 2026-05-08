@@ -350,41 +350,18 @@
                 </section>
 
                 <section class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-4">
-                  <p class="text-gray-700 leading-relaxed">
-                    Hiragana adalah salah satu dari tiga sistem penulisan bahasa Jepang (bersama Katakana dan Kanji)
-                    yang terdiri dari 46 karakter dasar. Huruf ini bersifat fonetik, mewakili bunyi suku kata, dan
-                    ditandai dengan bentuknya yang melengkung. Hiragana digunakan untuk menulis kata-kata asli Jepang,
-                    partikel, serta okurigana.
-                  </p>
-
-                  <div>
-                    <h4 class="text-2xl font-black text-gray-800">Huruf Dasar Hiragana</h4>
-                    <p class="text-sm text-gray-500 mt-1">Berikut adalah huruf vokal dalam hiragana</p>
+                  <div v-if="isLoadingMaterials" class="text-center text-gray-500 py-10 font-bold">
+                    Sedang memuat materi...
                   </div>
-
-                  <div class="max-w-xl rounded-xl border border-amber-200 bg-[#FFF9EC] p-4">
-                    <div class="text-center text-2xl font-black text-blue-700 mb-2">Hiragana Vowels 👶</div>
-                    <div class="grid grid-cols-5 border border-amber-200 rounded-lg overflow-hidden text-center">
-                      <div v-for="letter in hiraganaTable" :key="letter.romaji" class="p-3 bg-white border-r border-amber-200 last:border-r-0">
-                        <p class="text-4xl font-bold text-blue-700">{{ letter.upper }}</p>
-                        <p class="text-3xl text-blue-800 mt-1">{{ letter.char }}</p>
-                        <p class="text-sm font-semibold text-gray-600 mt-1">{{ letter.romaji }}</p>
-                      </div>
-                    </div>
+                  
+                  <div v-else-if="selectedLesson?.content">
+                    <div class="prose max-w-none text-gray-700 leading-relaxed" v-html="selectedLesson.content"></div>
                   </div>
-
-                  <div>
-                    <h4 class="text-2xl font-black text-gray-800 mb-3">Tips Menghafal Huruf Dasar Hiragana</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <article
-                        v-for="tip in learningTips"
-                        :key="tip.id"
-                        class="rounded-xl border border-blue-300 bg-[#F9FCFF] p-4"
-                      >
-                        <h5 class="text-lg font-black text-gray-800">{{ tip.title }}</h5>
-                        <p class="text-sm text-gray-600 mt-1">{{ tip.description }}</p>
-                      </article>
-                    </div>
+                  
+                  <div v-else class="text-center text-gray-500 py-10">
+                    <span class="text-4xl mb-3 block opacity-50">📄</span>
+                    <p class="font-bold text-lg">Materi belum memiliki konten</p>
+                    <p class="text-sm mt-1">Tutor belum mengunggah konten detail untuk materi ini.</p>
                   </div>
                 </section>
               </div>
@@ -397,6 +374,7 @@ import { computed, ref } from 'vue'
 
 const props = defineProps({
   japaneseClassData: { type: Object, default: null },
+  kelas: { type: Array, default: () => [] },
 })
 
 const japaneseClassState = ref(props.japaneseClassData)
@@ -417,68 +395,85 @@ const kelasTabs = [
   { id: 'selesai', label: 'Selesai' },
 ]
 
-const kelasItems = [
-  { id: 1, subject: 'Informatika', topic: 'UI/UX Design', tutor: 'Ananta Aldora', schedule: 'Jumat, 15:00-17:30', status: 'upcoming', icon: '🖥️', progress: 0 },
-  { id: 2, subject: 'Fisika', topic: 'Listrik dan Magnet', tutor: 'Yura Agustina', schedule: 'Rabu, 12:00-13:30', status: 'upcoming', icon: '🧲', progress: 0 },
-  { id: 3, subject: 'Matematika', topic: 'Transformasi Geometri', tutor: 'Isyana Randini', schedule: 'Jumat, 15:00-17:30', status: 'active', icon: '📐', progress: 15 },
-  { id: 4, subject: 'Bahasa Jepang', topic: 'Huruf Hiragana', tutor: 'Renata', schedule: 'Rabu, 12:00-13:30', status: 'active', icon: '🇯🇵', progress: 65 },
-  { id: 13, subject: 'Bahasa Inggris', topic: 'Simple Present Tense', tutor: 'John Doe', schedule: 'Jumat, 17:00-18:30', status: 'active', icon: '🇬🇧', progress: 40 },
-  { id: 14, subject: 'Bahasa Indonesia', topic: 'Paragraf Deduktif', tutor: 'Jonathan', schedule: 'Sabtu, 15:00-17:30', status: 'active', icon: '📚', progress: 95 },
-  { id: 5, subject: 'Biologi', topic: 'Asam Nukleat', tutor: 'Oliver James', schedule: 'Senin, 10:00-11:30', status: 'completed', icon: '🧬', progress: 100 },
-  { id: 6, subject: 'Kimia', topic: 'Reaksi Kimia', tutor: 'Oliver James', schedule: 'Selasa, 13:00-14:30', status: 'completed', icon: '🧪', progress: 100 },
-  { id: 7, subject: 'Sejarah', topic: 'Sejarah Dunia Modern', tutor: 'Maria Santoso', schedule: 'Rabu, 09:00-10:30', status: 'completed', icon: '🌍', progress: 100 },
-  { id: 8, subject: 'Matematika', topic: 'Bangun Ruang', tutor: 'Isyana Randini', schedule: 'Kamis, 15:00-16:30', status: 'completed', icon: '📦', progress: 100 },
-  { id: 9, subject: 'Matematika', topic: 'Phytagoras', tutor: 'Budi Wijaya', schedule: 'Jumat, 08:00-09:30', status: 'completed', icon: '📏', progress: 100 },
-  { id: 10, subject: 'Geografi', topic: 'Peta dan Pemetaan', tutor: 'Dewi Lestari', schedule: 'Sabtu, 10:00-11:30', status: 'completed', icon: '🗺️', progress: 100 },
-  { id: 11, subject: 'Seni Budaya', topic: 'Seni Musik', tutor: 'Rina Kusuma', schedule: 'Minggu, 14:00-15:30', status: 'completed', icon: '🎵', progress: 100 },
-  { id: 12, subject: 'Ekonomi', topic: 'Manajemen Keuangan', tutor: 'Andre Pratama', schedule: 'Senin, 15:00-16:30', status: 'completed', icon: '💹', progress: 100 },
-]
+const kelasItems = computed(() => {
+  if (!props.kelas) return [];
+  return props.kelas.map(k => {
+      // Find nearest schedule or first schedule
+      let scheduleText = 'Belum dijadwalkan';
+      let statusStr = k.status;
+      if (k.schedules && k.schedules.length > 0) {
+          const firstSch = k.schedules[0];
+          const start = new Date(firstSch.start_time);
+          const end = new Date(firstSch.end_time);
+          const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+          scheduleText = `${days[start.getDay()]}, ${start.getHours().toString().padStart(2,'0')}:${start.getMinutes().toString().padStart(2,'0')}-${end.getHours().toString().padStart(2,'0')}:${end.getMinutes().toString().padStart(2,'0')}`;
+          
+          if (start > new Date() && statusStr !== 'active') {
+              statusStr = 'upcoming';
+          }
+      }
+      return {
+          id: k.id,
+          subject: k.subject ? k.subject.name : 'Unknown',
+          topic: k.paket_mengajar || 'Materi Umum',
+          tutor: k.tutor ? k.tutor.name : 'Unknown',
+          schedule: scheduleText,
+          status: statusStr,
+          icon: k.subject?.icon || '📚',
+          progress: k.progress_percentage || 0,
+      }
+  });
+});
 
-const jumlahKelasAktifMingguIni = computed(() => kelasItems.filter((k) => k.status === 'active').length)
+const jumlahKelasAktifMingguIni = computed(() => kelasItems.value.filter((k) => k.status === 'active').length)
 
 const filteredKelas = computed(() => {
-  if (kelasFilter.value === 'aktif') return kelasItems.filter((k) => k.status === 'active')
-  if (kelasFilter.value === 'selesai') return kelasItems.filter((k) => k.status === 'completed')
-  return kelasItems
+  if (kelasFilter.value === 'aktif') return kelasItems.value.filter((k) => k.status === 'active' || k.status === 'upcoming')
+  if (kelasFilter.value === 'selesai') return kelasItems.value.filter((k) => k.status === 'completed')
+  return kelasItems.value
 })
 
-const fallbackJapaneseMaterials = [
-  { id: 1, order: 1, title: 'Dasar Hiragana', description: 'Belajar dasar pengenalan huruf hiragana.', status: 'completed', isCurrent: true },
-  { id: 2, order: 2, title: 'Huruf Baris K', description: 'Belajar dasar pengenalan huruf hiragana.', status: 'locked', isCurrent: false },
-  { id: 3, order: 3, title: 'Huruf Baris S', description: 'Belajar dasar pengenalan huruf hiragana.', status: 'locked', isCurrent: false },
-  { id: 4, order: 4, title: 'Huruf Baris T', description: 'Belajar dasar pengenalan huruf hiragana.', status: 'locked', isCurrent: false },
-]
 
-const fallbackJapaneseTasks = [
-  { id: 1, order: 1, title: 'Tugas 1: Menulis Hiragana A-Ka', description: 'Tulislah di buku tulis, hiragana A-Ka', deadline: 'Ming, 20.00', statusType: 'done', statusLabel: '✔ Sudah Dikumpul', action: 'Lihat Jawaban' },
-  { id: 2, order: 2, title: 'Tugas 2: Menulis Hiragana A-Sa', description: 'Tulislah di buku tulis, hiragana A-Ka', deadline: 'Ming, 20.00', statusType: 'pending', statusLabel: '◷ Belum Dikerjakan', action: 'Kerjakan' },
-  { id: 3, order: 3, title: 'Tugas 3: Menulis Hiragana A-Sa', description: 'Tulislah di buku tulis, hiragana A-Ka', deadline: 'Ming, 20.00', statusType: 'late', statusLabel: '◉ Terlambat', action: '' },
-]
 
 const japaneseMaterials = computed(() => {
-  const source = japaneseClassState.value?.materials ?? []
-  if (!source.length) return fallbackJapaneseMaterials
+  const source = japaneseClassState.value?.materials ?? [];
+  if (!source.length) return [];
+  
   return source.map((material, index) => ({
-    id: material.id, order: material.order_index ?? index + 1, title: material.title,
-    description: material.description || 'Belajar materi bahasa Jepang.', status: material.status || 'locked', isCurrent: index === 0,
-  }))
-})
+    id: material.id, 
+    order: material.order_index ?? index + 1, 
+    title: material.title,
+    description: material.description || 'Belajar materi pelajaran ini.', 
+    content: material.content,
+    status: material.status || 'locked', 
+    isCurrent: index === 0,
+  }));
+});
 
 function getTaskStatusType(status) { if (status === 'done') return 'done'; if (status === 'late') return 'late'; return 'pending' }
 function getTaskStatusLabel(st) { if (st === 'done') return '✔ Sudah Dikumpul'; if (st === 'late') return '◉ Terlambat'; return '◷ Belum Dikerjakan' }
 function getTaskAction(st) { if (st === 'done') return 'Lihat Jawaban'; if (st === 'pending') return 'Kerjakan'; return '' }
 
 const japaneseTasks = computed(() => {
-  const source = japaneseClassState.value?.materials ?? []
-  if (!source.length) return fallbackJapaneseTasks
+  const source = japaneseClassState.value?.materials ?? [];
+  if (!source.length) return [];
+  
   return source.flatMap((material) =>
     (material.tasks ?? []).map((task, index) => {
-      const statusType = getTaskStatusType(task.status)
-      return { id: task.id, order: index + 1, title: task.title, description: task.description || `Tugas untuk materi ${material.title}`,
-        deadline: task.deadline ? new Date(task.deadline).toLocaleString('id-ID') : '-', statusType, statusLabel: getTaskStatusLabel(statusType), action: getTaskAction(statusType) }
+      const statusType = getTaskStatusType(task.status);
+      return { 
+        id: task.id, 
+        order: index + 1, 
+        title: task.title, 
+        description: task.description || `Tugas untuk materi ${material.title}`,
+        deadline: task.deadline ? new Date(task.deadline).toLocaleString('id-ID') : '-', 
+        statusType, 
+        statusLabel: getTaskStatusLabel(statusType), 
+        action: getTaskAction(statusType) 
+      };
     })
-  )
-})
+  );
+});
 
 const canCreateMaterial = computed(() => Boolean(japaneseClassState.value?.id))
 
@@ -504,18 +499,33 @@ async function submitCreateMaterial() {
   finally { isCreatingMaterial.value = false }
 }
 
-const hiraganaTable = [
-  { upper: 'A', char: 'あ', romaji: 'a' }, { upper: 'I', char: 'い', romaji: 'i' },
-  { upper: 'U', char: 'う', romaji: 'u' }, { upper: 'E', char: 'え', romaji: 'e' }, { upper: 'O', char: 'お', romaji: 'o' },
-]
 
-const learningTips = [
-  { id: 1, title: 'Ulangi dan Tulis', description: 'Tulis tiap huruf hingga terbiasa dengan bentuknya dan cara pengucapannya.' },
-  { id: 2, title: 'Gunakan Kartu', description: 'Buat kartu huruf dan bacakan dengan suara nyaring untuk memperkuat ingatan.' },
-  { id: 3, title: 'Bermain Quiz', description: 'Latih diri dengan kuis ringan agar hafalan lebih cepat dan menyenangkan.' },
-]
 
-function openKelasMateri(kelas) { selectedKelas.value = kelas; selectedLesson.value = japaneseMaterials.value[0] ?? null; kelasMateriTab.value = 'materi'; kelasView.value = 'materi' }
+const isLoadingMaterials = ref(false)
+
+async function openKelasMateri(kelas) { 
+  selectedKelas.value = kelas; 
+  kelasMateriTab.value = 'materi'; 
+  kelasView.value = 'materi'; 
+  
+  japaneseClassState.value = null;
+  isLoadingMaterials.value = true;
+  
+  try {
+    const res = await window.axios.get(`/api/classes/${kelas.id}/materials`);
+    japaneseClassState.value = {
+      id: res.data.class.id,
+      materials: res.data.materials
+    };
+    selectedLesson.value = japaneseMaterials.value[0] ?? null;
+  } catch (e) {
+    console.error("Gagal memuat materi kelas", e);
+    alert("Gagal memuat materi. Pastikan Anda memiliki akses ke kelas ini.");
+    kelasView.value = 'list';
+  } finally {
+    isLoadingMaterials.value = false;
+  }
+}
 function openMateriDetail(materi) { selectedLesson.value = materi; kelasView.value = 'detail' }
 function goBackToKelasList() { kelasView.value = 'list' }
 function goBackToMateriList() { kelasView.value = 'materi' }

@@ -4,28 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Material extends Model
 {
     use HasFactory;
 
+    // Tambahkan 'content' di sini
     protected $fillable = [
-        'study_class_id',
-        'title',
-        'description',
-        'order_index',
-        'status',
+        'study_class_id', 
+        'title', 
+        'description', 
+        'content', 
+        'order_index', 
+        'status'
     ];
 
-    public function studyClass(): BelongsTo
+    public function studyClass()
     {
         return $this->belongsTo(StudyClass::class);
     }
 
-    public function tasks(): HasMany
+    // Tambahkan relasi ke tugas (1 materi bisa memiliki banyak tugas)
+    public function tasks()
     {
         return $this->hasMany(Task::class);
     }
+    public function attachments()
+{
+    return $this->morphMany(Attachment::class, 'attachable');
+}
+
 }

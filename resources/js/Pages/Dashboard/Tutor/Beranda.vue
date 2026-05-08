@@ -108,13 +108,18 @@
                 <h3 class="font-bold text-gray-900 flex items-center gap-2">💰 Penghasilan</h3>
                 <a href="#" class="text-xs text-gray-400 font-bold hover:text-blue-600 transition">Lihat Semua</a>
               </div>
-              <div class="mb-3">
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Satu 2023</p>
+                            <div class="mb-3">
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Pendapatan</p>
                 <div class="flex items-end gap-2 mt-1">
-                  <span class="text-2xl font-black text-gray-900">$12.7k</span>
-                  <span class="text-[11px] font-bold text-emerald-500 mb-1">🔺 1.2%</span>
+                  
+                  <span class="text-2xl font-black text-gray-900">{{ formatRupiah(props.statistik.totalPenghasilan) }}</span>
                 </div>
               </div>
+              <div class="flex items-center gap-2 mb-3">
+                
+                <div class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-lg">{{ props.statistik.totalTransaksi }} Transaksi Selesai</div>
+              </div>
+
               <div class="flex items-center gap-2 mb-3">
                 <div class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-lg">1,343 sales</div>
               </div>
@@ -169,7 +174,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
 const emit = defineEmits(['navigate'])
 function goNav(id) { emit('navigate', id) }
 const notifikasi = [
@@ -186,12 +192,32 @@ const jadwalMengajar = [
   { id: 2, siswa: 'Eka Savitry', mapel: 'Matematika-SMA', waktu: 'Harini, 15:00-16:00' },
   { id: 3, siswa: 'Natasha', mapel: 'Matematika-SD', waktu: 'Minggu, 15:00-13:00' },
 ]
-const performaSiswa = [
-  { id: 1, name: 'Kevin H', mapel: 'Matematika-SMP', percent: 85 },
-  { id: 2, name: 'Kevin H', mapel: 'Matematika-SMP', percent: 15 },
-  { id: 3, name: 'Kevin H', mapel: 'Matematika-SMP', percent: 15 },
-  { id: 4, name: 'Kevin H', mapel: 'Matematika-SMP', percent: 15 },
-]
+const performaSiswa = computed(() => {
+  if (!props.kelasAktif || props.kelasAktif.length === 0) return [];
+  
+  return props.kelasAktif.map(kelas => {
+    const totalTasks = kelas.tasks ? kelas.tasks.length : 0;
+    
+    // Asumsi status tugas 'completed' jika sudah selesai dikerjakan.
+    const completedTasks = kelas.tasks 
+        ? kelas.tasks.filter(t => t.status === 'completed' || t.status === 'done').length 
+        : 0;
+    
+    let percent = 0;
+    if (totalTasks > 0) {
+        percent = Math.round((completedTasks / totalTasks) * 100);
+    }
+    
+    return {
+      id: kelas.id,
+      name: kelas.student.name,
+      mapel: kelas.subject.name,
+      percent: percent
+    };
+  });
+});
+
+
 
 
 import { router } from '@inertiajs/vue3'
@@ -199,9 +225,13 @@ import { router } from '@inertiajs/vue3'
 const props = defineProps({
   pesanan: { type: Array, default: () => [] },
   kelasAktif: { type: Array, default: () => [] },
-  jadwal: { type: Array, default: () => [] } // <-- Tambahkan ini
+  jadwal: { type: Array, default: () => [] } ,
+  statistik: { type: Object, default: () => ({ totalPenghasilan: 0, totalTransaksi: 0 }) },
 })
-
+// format mata uang
+function formatRupiah(angka) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka || 0);
+}
 // Fungsi untuk merapikan tanggal (contoh: "Min, 14 Mei 15.00")
 function formatTanggal(isoString) {
     if(!isoString) return '';

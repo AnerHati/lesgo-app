@@ -4,6 +4,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentDashboardController;
 use App\Http\Controllers\TutorDashboardController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ParentDashboardController;
 use App\Http\Controllers\Auth\RegisterStepController;
 use Illuminate\Foundation\Application;
@@ -68,7 +69,9 @@ Route::middleware('auth')->group(function () {
             if ($pivot && $pivot->registration_step >= 4) {
                 return redirect('/');
             }
+            
         }
+       
 
         return Inertia::render('Auth/Shared/CompleteProfile');
     })->name('register.step2');
@@ -109,15 +112,22 @@ Route::middleware('auth')->group(function () {
        Route::middleware('role:siswa')->group(function () {
         Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
         Route::post('/booking-tutor', [StudentDashboardController::class, 'storeBooking'])->name('booking.tutor');
+        Route::post('/student/booking/{id}/pay', [StudentDashboardController::class, 'payBooking'])->name('student.booking.pay');
     });
 
     Route::middleware('role:tutor')->group(function () {
         Route::get('/dashboard-tutor', [TutorDashboardController::class, 'index'])->name('dashboard.tutor');
         
-        // Endpoint baru untuk Menerima dan Menolak Pesanan
+        // Terima / Tolak Pesanan
         Route::post('/tutor/booking/{id}/accept', [TutorDashboardController::class, 'acceptBooking'])->name('tutor.booking.accept');
         Route::post('/tutor/booking/{id}/reject', [TutorDashboardController::class, 'rejectBooking'])->name('tutor.booking.reject');
         
+        // CRUD Tutor
+        Route::post('/tutor/jadwal', [TutorDashboardController::class, 'storeSchedule'])->name('tutor.jadwal.store');
+        Route::post('/tutor/kelas/{studyClass}/materi', [TutorDashboardController::class, 'storeMaterial'])->name('tutor.materi.store');
+        Route::post('/tutor/kelas/{studyClass}/tugas', [TutorDashboardController::class, 'storeTask'])->name('tutor.tugas.store');
+        Route::post('/tutor/kelas/{studyClass}/catatan', [TutorDashboardController::class, 'storeNote'])->name('tutor.catatan.store');
+
         Route::post('/study-classes/{studyClass}/materials', [MaterialController::class, 'store'])
             ->name('study-classes.materials.store');
     });
@@ -145,4 +155,40 @@ Route::middleware('auth')->group(function () {
             default => redirect()->route('dashboard.siswa'),
         };
     })->name('switch.role');
+
+    // ── Chat API (siswa & tutor boleh akses) ──────────────────
+Route::get('/api/chat/contacts', [MessageController::class, 'getContacts']);
+Route::get('/api/chat/messages/{contactId}', [MessageController::class, 'fetchMessages']);
+Route::post('/api/chat/messages', [MessageController::class, 'sendMessage'])->middleware('throttle:60,1');
+Route::get('/api/reviews/tutor/{tutorId}', [\App\Http\Controllers\ReviewController::class, 'getTutorReviews']);
+Route::post('/api/attachments', [\App\Http\Controllers\AttachmentController::class, 'upload'])->middleware('throttle:30,1');
+Route::delete('/api/attachments/{id}', [\App\Http\Controllers\AttachmentController::class, 'delete']);
+
+// ── API Notifikasi ────────────────────────────────────────
+Route::get('/api/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
+Route::get('/api/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount']);
+Route::post('/api/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+Route::post('/api/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
+
+
+
+// ── API khusus Siswa ──────────────────────────────────────
+Route::middleware('role:siswa')->group(function () {
+    Route::post('/api/payment/{transactionId}/snap-token', [\App\Http\Controllers\PaymentController::class, 'createSnapToken']);
+    Route::post('/api/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->middleware('throttle:30,1');
+    Route::get('/api/tasks/{id}/quiz', [\App\Http\Controllers\TaskController::class, 'getQuiz']);
+    Route::post('/api/tasks/{id}/submit', [\App\Http\Controllers\TaskController::class, 'submitQuiz'])->middleware('throttle:30,1');
+    Route::get('/api/classes/{id}/materials', [\App\Http\Controllers\MaterialController::class, 'getClassMaterials']);
+    Route::get('/api/transactions/student', [\App\Http\Controllers\TransactionController::class, 'getStudentTransactions']);
+});
+
+// ── API khusus Tutor ──────────────────────────────────────
+Route::middleware('role:tutor')->group(function () {
+    Route::post('/api/tasks/{id}/questions', [\App\Http\Controllers\TaskController::class, 'createQuestion'])->middleware('throttle:30,1');
+    Route::get('/api/transactions/tutor', [\App\Http\Controllers\TransactionController::class, 'getTutorEarnings']);
+});
+
+Route::post('/api/midtrans/webhook', [\App\Http\Controllers\PaymentController::class, 'handleWebhook'])->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
+
+
 });

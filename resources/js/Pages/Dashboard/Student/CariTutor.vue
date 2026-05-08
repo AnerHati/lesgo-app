@@ -294,103 +294,31 @@
                   </div>
 
                   <!-- Tutor List -->
-                  <div class="grid grid-cols-1 md:grid-cols-2 bg-white">
-                    <!-- Left Column -->
-                    <div class="flex flex-col md:border-r border-gray-200">
-                      <!-- Row 1 -->
-                      <div class="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition" @click="cariView = 'profil'">
-                        <div class="flex items-center gap-3">
-                          <img src="https://ui-avatars.com/api/?name=Isyana+Randini&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-                          <div>
-                            <h4 class="text-sm font-black text-gray-900">Isyana Randini</h4>
-                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
-                              <span class="text-amber-400">⭐⭐⭐⭐⭐</span> 4.7
-                            </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 bg-white gap-0">
+                    <div 
+                      v-for="(tutor, index) in filteredCariTutor" 
+                      :key="'map-list-'+tutor.id"
+                      class="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition" 
+                      :class="{ 'md:border-r': index % 2 === 0 }"
+                      @click="viewTutor(tutor)"
+                    >
+                      <div class="flex items-center gap-3">
+                        <img :src="`https://ui-avatars.com/api/?name=${tutor.name.replace(/ /g, '+')}&background=eff6ff&color=2563eb`" class="w-12 h-12 rounded-full">
+                        <div>
+                          <h4 class="text-sm font-black text-gray-900">{{ tutor.name }}</h4>
+                          <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
+                            <span class="text-amber-400">⭐⭐⭐⭐⭐</span> {{ tutor.rating }}
                           </div>
-                        </div>
-                        <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
-                          <span class="text-gray-400">◎</span> 300m
                         </div>
                       </div>
-                      <!-- Row 2 -->
-                      <div class="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition" @click="cariView = 'profil'">
-                        <div class="flex items-center gap-3">
-                          <img src="https://ui-avatars.com/api/?name=Iqbal+Mustofa&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-                          <div>
-                            <h4 class="text-sm font-black text-gray-900">Iqbal Mustofa</h4>
-                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
-                              <span class="text-amber-400">⭐⭐⭐⭐⭐</span> 4.7
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
-                          <span class="text-gray-400">◎</span> 350m
-                        </div>
-                      </div>
-                      <!-- Row 3 -->
-                      <div class="flex items-center justify-between p-4 border-b md:border-b-0 border-gray-200 hover:bg-gray-50 cursor-pointer transition" @click="cariView = 'profil'">
-                        <div class="flex items-center gap-3">
-                          <img src="https://ui-avatars.com/api/?name=Tania+Riana&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-                          <div>
-                            <h4 class="text-sm font-black text-gray-900">Tania Riana</h4>
-                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
-                              <span class="text-amber-400">⭐⭐⭐⭐⭐</span> 4.7
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
-                          <span class="text-gray-400">◎</span> 400m
-                        </div>
+                      <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
+                        <span class="text-gray-400">◎</span> {{ tutor.distance }}km
                       </div>
                     </div>
-
-                    <!-- Right Column -->
-                    <div class="flex flex-col">
-                      <!-- Row 1 -->
-                      <div class="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition" @click="cariView = 'profil'">
-                        <div class="flex items-center gap-3">
-                          <img src="https://ui-avatars.com/api/?name=Isyana+Randini&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-                          <div>
-                            <h4 class="text-sm font-black text-gray-900">Isyana Randini</h4>
-                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
-                              <span class="text-amber-400">⭐⭐⭐⭐⭐</span> 4.7
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
-                          <span class="text-gray-400">◎</span> 1.1km
-                        </div>
-                      </div>
-                      <!-- Row 2 -->
-                      <div class="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition" @click="cariView = 'profil'">
-                        <div class="flex items-center gap-3">
-                          <img src="https://ui-avatars.com/api/?name=Iqbal+Mustofa&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-                          <div>
-                            <h4 class="text-sm font-black text-gray-900">Iqbal Mustofa</h4>
-                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
-                              <span class="text-amber-400">⭐⭐⭐⭐⭐</span> 4.7
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
-                          <span class="text-gray-400">◎</span> 1.3km
-                        </div>
-                      </div>
-                      <!-- Row 3 -->
-                      <div class="flex items-center justify-between p-4 border-b md:border-b-0 border-gray-200 hover:bg-gray-50 cursor-pointer transition" @click="cariView = 'profil'">
-                        <div class="flex items-center gap-3">
-                          <img src="https://ui-avatars.com/api/?name=Tania+Riana&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-                          <div>
-                            <h4 class="text-sm font-black text-gray-900">Tania Riana</h4>
-                            <div class="flex items-center gap-1 text-xs font-bold text-gray-500 mt-0.5">
-                              <span class="text-amber-400">⭐⭐⭐⭐⭐</span> 4.7
-                            </div>
-                          </div>
-                        </div>
-                        <div class="text-xs font-bold text-gray-500 flex items-center gap-1">
-                          <span class="text-gray-400">◎</span> 1.5km
-                        </div>
-                      </div>
+                    
+                    <!-- Jika filter tidak menemukan tutor -->
+                    <div v-if="filteredCariTutor.length === 0" class="col-span-2 p-8 text-center text-gray-400 font-bold">
+                       Tidak ada tutor yang terdeteksi di area ini.
                     </div>
                   </div>
 
@@ -798,7 +726,7 @@
                       </label>
                     </div>
 
-                    <button type="button" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-blue-100" @click="submitBooking">
+                    <button type="button" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-blue-100" @click="payBooking">
                       Bayar Sekarang
                     </button>
                   </div>
@@ -813,7 +741,8 @@ import { computed, ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-  tutors: { type: Array, default: () => [] }
+  tutors: { type: Array, default: () => [] },
+  kelas: { type: Array, default: () => [] }
 })
 
 const emit = defineEmits(['navigate'])
@@ -868,8 +797,29 @@ function submitBooking() {
         paket_mengajar: selectedPackage.value
     }, {
         onSuccess: () => {
-            showPaymentModal.value = false;
             cariView.value = 'menunggu_konfirmasi';
+        }
+    });
+}
+
+// Untuk pembayaran
+const activeClassToPay = computed(() => {
+    if (!props.kelas) return null;
+    return props.kelas.find(k => k.status === 'active' || k.status === 'pending');
+})
+
+function payBooking() {
+    if (!activeClassToPay.value) {
+        alert("Belum ada kelas yang bisa dibayar.");
+        return;
+    }
+    router.post(`/student/booking/${activeClassToPay.value.id}/pay`, {
+        payment_method: selectedPaymentMethod.value
+    }, {
+        onSuccess: () => {
+            showPaymentModal.value = false;
+            alert("Pembayaran Berhasil! Kelas sekarang aktif.");
+            cariView.value = 'semua';
         }
     });
 }

@@ -391,6 +391,40 @@
                   <span class="text-xs font-bold px-3 py-1 rounded-lg shrink-0" :class="t.statusClass">{{ t.status }}</span>
                 </div>
               </div>
+                            <!-- Buat Soal Kuis Form (Baru) -->
+              <div class="bg-blue-50/40 rounded-[24px] border border-blue-200 p-6 shadow-sm mb-6">
+                <h3 class="text-lg font-black text-blue-900 mb-4">📝 Tambah Soal Pilihan Ganda</h3>
+                <form @submit.prevent="submitNewQuestion" class="space-y-4">
+                  <div>
+                    <label class="text-xs font-bold text-gray-500 mb-1.5 block">Pertanyaan</label>
+                    <textarea v-model="newQuestionForm.question" rows="2" placeholder="Contoh: Apa nama ibukota Jepang?" class="w-full px-4 py-2.5 rounded-xl border-2 border-blue-200 text-sm font-medium text-gray-700 focus:border-blue-500 focus:outline-none transition"></textarea>
+                  </div>
+                  
+                  <!-- Grid Pilihan A,B,C,D -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div v-for="(opt, index) in newQuestionForm.options" :key="index" class="flex items-center gap-3 bg-white p-2 rounded-xl border border-gray-200 shadow-sm transition-all" :class="opt.is_correct ? 'ring-2 ring-emerald-400 border-emerald-400' : ''">
+                      <!-- Label A/B/C/D -->
+                      <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold shrink-0" :class="opt.is_correct ? 'bg-emerald-500 text-white' : 'bg-gray-100 text-gray-500'">
+                        {{ opt.label }}
+                      </div>
+                      <!-- Input Teks Opsi -->
+                      <input v-model="opt.value" type="text" :placeholder="`Pilihan ${opt.label}`" class="flex-1 border-none focus:ring-0 text-sm font-medium bg-transparent">
+                      <!-- Radio Button Benar/Salah -->
+                      <div class="pr-2 flex flex-col items-center">
+                        <input type="radio" name="correct_answer" :checked="opt.is_correct" @change="setCorrectOption(index)" class="w-4 h-4 text-emerald-500 border-gray-300 focus:ring-emerald-500 cursor-pointer">
+                        <span class="text-[8px] font-bold mt-1 text-gray-400" v-if="opt.is_correct">BENAR</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="flex justify-end pt-2">
+                    <button type="submit" :disabled="isSubmittingQuestion" class="bg-[#2563EB] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-sm disabled:opacity-50">
+                      {{ isSubmittingQuestion ? 'Menyimpan...' : '+ Tambahkan Soal' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+
             </template>
 
           </div>
@@ -431,4 +465,53 @@ const daftarTugas = [
 ]
 function openKelasDetail(kelas) { selectedKelas.value = kelas; kelasView.value = 'detail' }
 function openKelasSiswaDetail(siswa) { selectedKelasSiswa.value = siswa; kelasView.value = 'siswa_detail' }
-</script>
+
+
+// --- State Form Kuis ---
+const newQuestionForm = ref({
+  question: '',
+  type: 'multiple_choice',
+  options: [
+    { label: 'A', value: '', is_correct: true }, // Default A yang benar
+    { label: 'B', value: '', is_correct: false },
+    { label: 'C', value: '', is_correct: false },
+    { label: 'D', value: '', is_correct: false }
+  ]
+})
+const isSubmittingQuestion = ref(false)
+
+// --- Fungsi Submit Soal ---
+async function submitNewQuestion() {
+  // CATATAN: Karena data kelas tutor di halaman ini masih dummy, 
+  // kita tembak/simpan ke ID Tugas 1 sebagai percobaan.
+  const taskId = 1; 
+  
+  if (!newQuestionForm.value.question) return alert('Pertanyaan tidak boleh kosong!');
+  
+  isSubmittingQuestion.value = true;
+  try {
+    await window.axios.post(`/api/tasks/${taskId}/questions`, newQuestionForm.value);
+    alert('Berhasil! Soal baru berhasil ditambahkan ke Kuis.');
+    
+    // Kosongkan form kembali setelah sukses
+    newQuestionForm.value.question = '';
+    newQuestionForm.value.options.forEach((opt, idx) => {
+      opt.value = '';
+      opt.is_correct = idx === 0; 
+    });
+  } catch (e) {
+    console.error("Gagal tambah soal", e);
+    alert('Gagal menyimpan soal kuis.');
+  } finally {
+    isSubmittingQuestion.value = false;
+  }
+}
+
+// --- Fungsi Memilih Jawaban Benar ---
+function setCorrectOption(index) {
+  newQuestionForm.value.options.forEach((opt, idx) => {
+    opt.is_correct = (idx === index);
+  });
+}
+
+  </script>

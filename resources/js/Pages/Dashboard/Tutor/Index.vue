@@ -6,13 +6,27 @@
     @navigate="goNav"
   >
     <div class="space-y-6">
-      <Beranda v-if="activeSection === 'beranda'" @navigate="goNav" :pesanan="props.pesananMasuk" :kelasAktif="props.kelasAktif" :jadwal="props.jadwalMengajar"/>
+      <Beranda v-if="activeSection === 'beranda'" @navigate="goNav" 
+        :pesanan="props.pesananMasuk" 
+        :kelasAktif="props.kelasAktif" 
+        :jadwal="props.semuaJadwal"
+        :user="props.user"
+        :statistik="props.statistik" 
+      />
       <CariSiswa v-else-if="activeSection === 'cari_siswa'" />
-      <Siswa v-else-if="activeSection === 'siswa_saya'" />
-      <Kelas v-else-if="activeSection === 'kelas_saya'" />
-      <Jadwal v-else-if="activeSection === 'jadwal'" />
+      <Siswa v-else-if="activeSection === 'siswa_saya'" 
+        :kelasAktif="props.kelasAktif" 
+        :pesananMasuk="props.pesananMasuk"
+      />
+      <Kelas v-else-if="activeSection === 'kelas_saya'" 
+        :kelasAktif="props.kelasAktif"
+      />
+      <Jadwal v-else-if="activeSection === 'jadwal'" 
+        :semuaJadwal="props.semuaJadwal"
+        :kelasAktif="props.kelasAktif"
+      />
       <Keuangan v-else-if="activeSection === 'keuangan'" />
-      <Pesan v-else-if="activeSection === 'pesan'" />
+      <Pesan v-else-if="activeSection === 'pesan'" :user="props.user" />
       <Ulasan v-else-if="activeSection === 'ulasan'" />
       <Pengaturan v-else-if="activeSection === 'pengaturan'" />
 
@@ -45,10 +59,10 @@ import Pengaturan from './Pengaturan.vue'
 const props = defineProps({
   pesananMasuk: { type: Array, default: () => [] },
   kelasAktif: { type: Array, default: () => [] },
-  jadwalMengajar: { type: Array, default: () => [] }, 
-  user: { type: Object, default: () => ({}) }
+  semuaJadwal: { type: Array, default: () => [] },
+  user: { type: Object, default: () => ({}) },
+  statistik: { type: Object, default: () => ({ totalPenghasilan: 0, totalTransaksi: 0 }) },
 })
-
 
 const activeSection = ref('beranda')
 

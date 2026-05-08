@@ -14,7 +14,8 @@
                     <p class="text-xs font-bold text-blue-200">Saldo Saat Ini</p>
                     <span class="text-blue-200 text-xs font-bold">#FM1024</span>
                   </div>
-                  <p class="text-3xl font-black mb-5">Rp 6.350.000</p>
+                  <p class="text-3xl font-black mb-5">Rp {{ new Intl.NumberFormat('id-ID').format(totalSaldo) }}</p>
+
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
@@ -148,19 +149,50 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+
 const keuanganView = ref('riwayat')
 const keuanganFilter = ref('semua')
 const keuanganTabs = [{ id: 'semua', label: 'Semua' }, { id: 'pemasukan', label: 'Pemasukan' }, { id: 'penarikan', label: 'Penarikan' }]
-const keuanganItems = [
-  { id: 1, title: 'Komisi Pengajaran', desc: '1 Siswa, Kenzo Aliza', type: 'masuk', amount: '550.000', date: 'Sabtu, 08/12/2025', badge: null, badgeClass: '' },
-  { id: 2, title: 'Penarikan Dana', desc: 'Penarikan ke BRI, 6343', type: 'keluar', amount: '350.000', date: 'Sabtu, 08/12/2025', badge: 'Berhasil', badgeClass: 'bg-emerald-100 text-emerald-700' },
-  { id: 3, title: 'Komisi Pengajaran', desc: '2 Siswa', type: 'masuk', amount: '550.000', date: 'Sabtu, 08/12/2025', badge: null, badgeClass: '' },
-  { id: 4, title: 'Komisi Pengajaran', desc: 'Penarikan ke BRI, 6343', type: 'keluar', amount: '700.000', date: 'Sabtu, 08/12/2025', badge: 'Gagal', badgeClass: 'bg-red-100 text-red-700' },
-]
+
+// State untuk menyimpan data dari API
+const rawTransactions = ref([])
+const totalSaldo = ref(0)
+
+onMounted(async () => {
+  try {
+    // Memanggil API yang baru saja Anda buat
+    const res = await window.axios.get('/api/transactions/tutor')
+    rawTransactions.value = res.data
+    
+    // Hitung total saldo pendapatan (sementara kita asumsikan semua dihitung)
+    totalSaldo.value = rawTransactions.value.reduce((total, tx) => {
+      return total + (tx.amount || 0)
+    }, 0)
+  } catch (error) {
+    console.error("Gagal mengambil data riwayat keuangan", error)
+  }
+})
+
+// Memformat data dari database agar persis mengikuti gaya desain/UI yang sudah ada
+const keuanganItems = computed(() => {
+  return rawTransactions.value.map(tx => {
+    return {
+      id: tx.id,
+      title: 'Komisi Pengajaran',
+      desc: `Siswa: ${tx.study_class?.student?.name ?? 'Tidak diketahui'}`,
+      type: 'masuk', // Karena ini transaksi pendapatan tutor, jadi "masuk"
+      amount: new Intl.NumberFormat('id-ID').format(tx.amount || 0),
+      date: new Date(tx.created_at).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+      badge: tx.status === 'pending' ? 'Belum Cair' : 'Berhasil',
+      badgeClass: tx.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'
+    }
+  })
+})
+
 const filteredKeuangan = computed(() => {
-  if (keuanganFilter.value === 'pemasukan') return keuanganItems.filter(t => t.type === 'masuk')
-  if (keuanganFilter.value === 'penarikan') return keuanganItems.filter(t => t.type === 'keluar')
-  return keuanganItems
+  if (keuanganFilter.value === 'pemasukan') return keuanganItems.value.filter(t => t.type === 'masuk')
+  if (keuanganFilter.value === 'penarikan') return keuanganItems.value.filter(t => t.type === 'keluar')
+  return keuanganItems.value
 })
 </script>

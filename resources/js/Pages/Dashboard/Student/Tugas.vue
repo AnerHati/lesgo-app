@@ -282,6 +282,11 @@
 <script setup>
 import { computed, onBeforeUnmount, ref } from 'vue'
 
+const props = defineProps({
+  tugas: { type: Array, default: () => [] }
+})
+const isQuizLoading = ref(false);
+const quizResult = ref(null);
 const tugasView = ref('list')
 const selectedTugas = ref(null)
 const newKomentar = ref('')
@@ -295,36 +300,55 @@ const tugasTabs = [
   { id: 'semua', label: 'Semua' },
   { id: 'belum', label: 'Belum Selesai' },
   { id: 'selesai', label: 'Selesai' },
+  
 ]
 
-const tugasSayaItems = [
-  { id: 1, title: 'Latihan Transformasi Geometri', subject: 'Matematika', tutor: 'Nadriin', schedule: 'Jumat, 17 Mei', icon: '🧪', statusType: 'pending', statusLabel: 'Belum Selesai', meta: 'Batas Waktu: 21 Mei 2025, 14.00', primaryAction: 'Kumpulkan', secondaryAction: 'Lihat Tugas', detailDescription: 'Selesaikan latihan transformasi geometri sesuai instruksi pada lembar tugas.', detailRules: ['Kerjakan secara mandiri', 'Unggah jawaban sebelum batas waktu', 'Pastikan foto jawaban jelas'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: null, answerContent: '' },
-  { id: 2, title: 'Menulis Huruf Hiragana', subject: 'Bahasa Jepang', tutor: 'Renata', schedule: 'Senin, 11 Mei', icon: '🇯🇵', statusType: 'pending', statusLabel: 'Belum Selesai', meta: 'Batas Waktu: 21 Mei 2025, 23.00', primaryAction: 'Kumpulkan', secondaryAction: 'Lihat Tugas', detailDescription: 'Tuliskan huruf hiragana sesuai urutan yang telah dipelajari.', detailRules: ['Tulis di buku tulis', 'Foto hasil tulisan dengan jelas', 'Kirim sebelum batas waktu'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: null, answerContent: '' },
-  { id: 3, title: 'Membuat Catatan Reaksi Kimia', subject: 'Kimia', tutor: 'Jack', schedule: 'Minggu, 10 Mei', icon: '⚗️', statusType: 'pending', statusLabel: 'Belum Selesai', meta: 'Batas Waktu: 23 Mei 2025, 19.00', primaryAction: 'Kumpulkan', secondaryAction: 'Lihat Tugas', detailDescription: 'Buat rangkuman reaksi kimia dari materi minggu ini.', detailRules: ['Minimal 1 halaman', 'Tuliskan 5 contoh reaksi', 'Sertakan kesimpulan'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: null, answerContent: '' },
-  { id: 4, title: 'Melengkapi Soal Grammar', subject: 'Bahasa Inggris', tutor: 'John Doe', schedule: 'Jumat, 17 Mei', icon: '🧩', statusType: 'done', statusLabel: 'Sudah Dikumpulkan', meta: 'Sudah Dikumpulkan', primaryAction: 'Lihat Jawaban', secondaryAction: 'Detail', detailDescription: 'Tugas grammar telah selesai dikerjakan.', detailRules: ['Review jawaban untuk evaluasi'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: '17 Mei 2026, 19:42', answerContent: 'Saya melengkapi seluruh soal grammar dengan fokus pada present tense dan subject-verb agreement.' },
-  { id: 5, title: 'Mendesain UI Sederhana', subject: 'Informatika', tutor: 'Nadriin', schedule: 'Senin, 11 Mei', icon: '🎨', statusType: 'done', statusLabel: 'Sudah Dikumpulkan', meta: 'Sudah Dikumpulkan', primaryAction: 'Lihat Jawaban', secondaryAction: 'Detail', detailDescription: 'Tugas desain UI telah dikumpulkan.', detailRules: ['Periksa feedback tutor'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: '15 Mei 2026, 20:11', answerContent: 'Saya membuat wireframe dashboard dengan 3 section utama: ringkasan, tugas aktif, dan progres belajar.' },
-  { id: 6, title: 'Membuat Ringkasan Artikel', subject: 'Bahasa Indonesia', tutor: 'Jonathan', schedule: 'Minggu, 10 Mei', icon: '📝', statusType: 'done', statusLabel: 'Sudah Dikumpulkan', meta: 'Sudah Dikumpulkan', primaryAction: 'Lihat Jawaban', secondaryAction: 'Detail', detailDescription: 'Ringkasan artikel sudah dikumpulkan.', detailRules: ['Cek komentar tutor di hasil tugas'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: '14 Mei 2026, 16:03', answerContent: 'Ringkasan artikel saya mencakup gagasan utama, poin pendukung, dan simpulan akhir.' },
-  { id: 7, title: 'Mindmap Sistem Pernapasan', subject: 'Biologi', tutor: 'Aldora', schedule: 'Senin, 11 Mei', icon: '🫁', statusType: 'done', statusLabel: 'Sudah Dikumpulkan', meta: 'Sudah Dikumpulkan', primaryAction: 'Lihat Jawaban', secondaryAction: 'Detail', detailDescription: 'Mindmap sistem pernapasan sudah terkumpul.', detailRules: ['Lihat evaluasi dan revisi jika diperlukan'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: '13 Mei 2026, 10:27', answerContent: 'Saya membuat mindmap dari hidung, trakea, bronkus, hingga alveolus beserta fungsi tiap bagian.' },
-  { id: 8, title: 'Kuis Hiragana Dasar', subject: 'Bahasa Jepang', tutor: 'Renata', schedule: 'Senin, 11 Mei', icon: '📋', statusType: 'pending', statusLabel: 'Belum Selesai', meta: 'Durasi: 10 Menit • 10 Soal', primaryAction: 'Mulai Kuis', secondaryAction: 'Lihat Tugas', detailDescription: 'Kamu akan mengerjakan kuis menulis huruf hiragana dasar dalam Bahasa Jepang.', detailRules: ['Quiz terdiri dari 10 soal pilihan ganda', 'Waktu pengerjaan 10 menit', 'Setiap soal hanya memiliki 1 jawaban benar', 'Quiz akan otomatis selesai saat waktu habis'], quizTotalSoal: 10, quizDurasi: '10 menit', quizSkorMinimal: '70/100', submittedAt: null, answerContent: '' },
-]
+const tugasSayaItems = computed(() => {
+  if (!props.tugas) return [];
+  return props.tugas.map(t => {
+      let statusType = t.status === 'completed' || t.status === 'done' ? 'done' : 'pending';
+      let statusLabel = statusType === 'done' ? 'Sudah Dikumpulkan' : 'Belum Selesai';
+      let primaryAction = statusType === 'done' ? 'Lihat Jawaban' : 'Kumpulkan';
+      let scheduleStr = t.study_class?.schedules && t.study_class.schedules.length > 0 
+          ? new Date(t.study_class.schedules[0].start_time).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' })
+          : 'Belum dijadwalkan';
+          
+      return {
+          id: t.id,
+          title: t.title || 'Tugas Tanpa Judul',
+          subject: t.study_class?.subject?.name || 'Mata Pelajaran',
+          tutor: t.study_class?.tutor?.name || 'Tutor',
+          schedule: scheduleStr,
+          icon: t.study_class?.subject?.icon || '📝',
+          statusType: statusType,
+          statusLabel: statusLabel,
+          meta: `Batas Waktu: ${t.deadline ? new Date(t.deadline).toLocaleString('id-ID') : '-'}`,
+          primaryAction: primaryAction,
+          secondaryAction: 'Lihat Tugas',
+          detailDescription: t.description || 'Selesaikan tugas ini sesuai instruksi tutor.',
+          detailRules: ['Kerjakan secara mandiri', 'Kumpulkan sebelum batas waktu'],
+          quizTotalSoal: 10,
+          quizDurasi: '10 menit',
+          quizSkorMinimal: '70/100',
+          submittedAt: null,
+          answerContent: ''
+      }
+  });
+});
 
 const komentarTugas = ref({
   4: [{ id: 1, author: 'Tutor John Doe', time: '17 Mei 2026, 20:01', message: 'Bagus, grammar kamu sudah rapi. Tetap latihan ya.' }],
   5: [{ id: 1, author: 'Tutor Nadriin', time: '15 Mei 2026, 21:10', message: 'UI kamu clean, tinggal perbaiki spacing pada card kedua.' }],
 })
 
-const tugasBelumSelesaiCount = computed(() => tugasSayaItems.filter((t) => t.statusType === 'pending').length)
+const tugasBelumSelesaiCount = computed(() => tugasSayaItems.value.filter((t) => t.statusType === 'pending').length)
 const filteredTugasSaya = computed(() => {
-  if (tugasFilter.value === 'belum') return tugasSayaItems.filter((t) => t.statusType === 'pending')
-  if (tugasFilter.value === 'selesai') return tugasSayaItems.filter((t) => t.statusType === 'done')
-  return tugasSayaItems
+  if (tugasFilter.value === 'belum') return tugasSayaItems.value.filter((t) => t.statusType === 'pending')
+  if (tugasFilter.value === 'selesai') return tugasSayaItems.value.filter((t) => t.statusType === 'done')
+  return tugasSayaItems.value
 })
 
-const quizQuestions = ref([
-  { id: 1, question: 'Huruf hiragana untuk bunyi "a" adalah...', options: [{ value: 'a', label: 'あ' }, { value: 'b', label: 'い' }, { value: 'c', label: 'う' }, { value: 'd', label: 'え' }] },
-  { id: 2, question: 'Huruf hiragana untuk bunyi "i" adalah...', options: [{ value: 'a', label: 'あ' }, { value: 'b', label: 'い' }, { value: 'c', label: 'お' }, { value: 'd', label: 'う' }] },
-  { id: 3, question: 'Huruf hiragana untuk bunyi "o" adalah...', options: [{ value: 'a', label: 'え' }, { value: 'b', label: 'あ' }, { value: 'c', label: 'お' }, { value: 'd', label: 'い' }] },
-])
+const quizQuestions = ref([])
 
 const currentQuestion = computed(() => quizQuestions.value[quizIndex.value] ?? null)
 const currentQuestionNumber = computed(() => quizIndex.value + 1)
@@ -366,13 +390,72 @@ function selectAnswer(value) { if (!currentQuestion.value) return; quizAnswers.v
 function goNextQuestion() { if (quizIndex.value < quizQuestions.value.length - 1) quizIndex.value += 1 }
 function goPrevQuestion() { if (quizIndex.value > 0) quizIndex.value -= 1 }
 function stopQuizTimer() { if (quizTimerId) { clearInterval(quizTimerId); quizTimerId = null } }
-function submitQuiz() { stopQuizTimer(); quizSubmitted.value = true; tugasView.value = 'list' }
-function startQuizFromTask() {
-  if (!selectedTugas.value) return
-  if (!String(selectedTugas.value.primaryAction).toLowerCase().includes('kuis')) return
-  quizIndex.value = 0; quizAnswers.value = {}; quizSubmitted.value = false; quizRemainingSeconds.value = 10 * 60; tugasView.value = 'quiz'
-  stopQuizTimer()
-  quizTimerId = setInterval(() => { if (quizRemainingSeconds.value <= 1) { quizRemainingSeconds.value = 0; submitQuiz(); return }; quizRemainingSeconds.value -= 1 }, 1000)
+async function submitQuiz() { 
+  stopQuizTimer(); 
+  
+  try {
+    // Kirim data jawaban ke backend
+    const res = await window.axios.post(`/api/tasks/${selectedTugas.value.id}/submit`, {
+      answers: quizAnswers.value // Format: { question_id: option_id }
+    });
+
+    quizResult.value = res.data; // Menyimpan respons skor dari backend
+    quizSubmitted.value = true;
+    
+    // Tampilkan hasil dan kembali ke daftar (atau ubah ke view hasil/answer)
+    alert(`Skor Anda: ${res.data.score} (${res.data.correct_answers} benar dari ${res.data.total_questions} soal)`);
+    tugasView.value = 'list';
+    
+  } catch (error) {
+    console.error('Gagal mengirim jawaban:', error);
+    alert(error.response?.data?.message || 'Gagal mengirim kuis.');
+    tugasView.value = 'list';
+  }
+}
+
+async function startQuizFromTask() {
+  if (!selectedTugas.value) return;
+  if (!String(selectedTugas.value.primaryAction).toLowerCase().includes('kuis')) return;
+  
+  isQuizLoading.value = true;
+  quizIndex.value = 0; 
+  quizAnswers.value = {}; 
+  quizSubmitted.value = false;
+  quizResult.value = null;
+  tugasView.value = 'quiz';
+
+  try {
+    // Memanggil API backend untuk mendapatkan soal kuis
+    const res = await window.axios.get(`/api/tasks/${selectedTugas.value.id}/quiz`);
+    
+    // Memetakan struktur soal dari database ke frontend
+    quizQuestions.value = res.data.questions.map((q) => ({
+      id: q.id,
+      question: q.question,
+      options: q.options.map((opt) => ({
+        value: opt.id, // Kita pakai ID option sebagai value
+        label: opt.value // Teks pilihan ganda A/B/C/D
+      }))
+    }));
+
+    quizRemainingSeconds.value = 10 * 60; // Set timer 10 menit
+    stopQuizTimer();
+    quizTimerId = setInterval(() => { 
+      if (quizRemainingSeconds.value <= 1) { 
+        quizRemainingSeconds.value = 0; 
+        submitQuiz(); 
+        return; 
+      }
+      quizRemainingSeconds.value -= 1;
+    }, 1000);
+
+  } catch (error) {
+    console.error('Gagal mengambil kuis:', error);
+    alert('Terjadi kesalahan atau Anda sudah mengerjakan kuis ini.');
+    tugasView.value = 'detail'; // kembali jika gagal
+  } finally {
+    isQuizLoading.value = false;
+  }
 }
 onBeforeUnmount(() => { stopQuizTimer() })
 </script>

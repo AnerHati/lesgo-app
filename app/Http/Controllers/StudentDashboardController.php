@@ -21,7 +21,7 @@ class StudentDashboardController extends Controller
 
         // 1. Ambil Kelas Siswa
         $studyClasses = StudyClass::where('student_id', $user->id)
-            ->with(['subject', 'tutor'])
+            ->with(['subject', 'tutor', 'schedules', 'tasks', 'materials', 'notes'])
             ->get();
 
         $classIds = $studyClasses->pluck('id');
@@ -42,17 +42,33 @@ class StudentDashboardController extends Controller
             ->with(['studyClass.subject'])
             ->get();
 
-        // 4. Ambil Daftar Semua Tutor untuk Halaman "Cari Tutor"
+               // 4. Ambil Daftar Semua Tutor untuk Halaman "Cari Tutor"
         $tutors = User::whereHas('roles', fn($q) => $q->where('name', 'tutor'))
             ->with(['tutorProfile', 'taughtSubjects'])
             ->get()
-            ->map(function ($tutor) {
+            ->map(function ($tutor) use ($user) {
+                // Kalkulasi jarak menggunakan Haversine Formula (KM)
+                $distance = 0;
+                if ($user->latitude && $user->longitude && $tutor->latitude && $tutor->longitude) {
+                    $latFrom = deg2rad($user->latitude);
+                    $lonFrom = deg2rad($user->longitude);
+                    $latTo = deg2rad($tutor->latitude);
+                    $lonTo = deg2rad($tutor->longitude);
+
+                    $latDelta = $latTo - $latFrom;
+                    $lonDelta = $lonTo - $lonFrom;
+
+                    $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                      cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+                    $distance = $angle * 6371; // Radius bumi dalam KM
+                }
+
                 return [
                     'id' => $tutor->id,
                     'name' => $tutor->name,
-                    'description' => $tutor->tutorProfile->bio ?? 'Tutor berpengalaman dan sabar. Ahli di bidangnya!',
-                    'rating' => 4.7, // Rating dummy sementara
-                    'distance' => rand(1, 10) + (rand(1, 9) / 10), // Jarak dummy sementara
+                    'description' => $tutor->tutorProfile->bio ?? 'Tutor berpengalaman dan sabar.',
+                    'rating' => $tutor->tutorProfile->rating ?? 0,
+                    'distance' => round($distance, 1), // Jarak dihitung akurat ke 1 desimal
                     'subjects' => $tutor->taughtSubjects->map(fn($s) => [
                         'id' => $s->id,
                         'name' => $s->name,
@@ -80,7 +96,7 @@ class StudentDashboardController extends Controller
             'paket_mengajar' => 'required|string',
         ]);
 
-        StudyClass::create([
+        $studyClass = StudyClass::create([
             'student_id' => Auth::id(),
             'tutor_id' => $request->tutor_id,
             'subject_id' => $request->subject_id,
@@ -88,6 +104,52 @@ class StudentDashboardController extends Controller
             'paket_mengajar' => $request->paket_mengajar,
             'status' => 'pending',
             'progress_percentage' => 0,
+        ]);
+
+        // Kirim notifikasi ke tutor
+        $tutor = \App\Models\User::find($request->tutor_id);
+        $studyClass->load('student', 'subject');
+        $tutor->notify(new \App\Notifications\NewBookingNotification($studyClass));
+
+        // Hitung harga berdasarkan paket
+        $paket = strtolower($request->paket_mengajar);
+        $amount = 100000; // default 1x pertemuan
+        
+        if (str_contains($paket, '4x')) {
+            $amount = 400000;
+        } elseif (str_contains($paket, '8x')) {
+            $amount = 760000;
+        } elseif (str_contains($paket, '12x')) {
+            $amount = 1100000;
+        }
+
+        // Buat transaksi awal status pending
+        \App\Models\Transaction::create([
+            'study_class_id' => $studyClass->id,
+            'amount' => $amount,
+            'status' => 'pending',
+            'payment_method' => null,
+            'paid_at' => null
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function payBooking(Request $request, $id)
+    {
+        $request->validate([
+            'payment_method' => 'required|string'
+        ]);
+
+        $transaction = \App\Models\Transaction::where('study_class_id', $id)
+            ->whereHas('studyClass', function($q) {
+                $q->where('student_id', Auth::id());
+            })->firstOrFail();
+
+        $transaction->update([
+            'status' => 'paid',
+            'payment_method' => $request->payment_method,
+            'paid_at' => now()
         ]);
 
         return redirect()->back();

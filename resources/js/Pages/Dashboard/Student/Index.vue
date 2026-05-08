@@ -14,8 +14,10 @@
   :progres="props.progresKelas"
   :user="props.user"
 />
-<CariTutor v-else-if="activeSection === 'cari'" @navigate="goNav" :tutors="props.tutors" />
-
+<CariTutor v-else-if="activeSection === 'cari'" @navigate="goNav" :tutors="props.tutors" :kelas="props.progresKelas" />
+<Kelas v-else-if="activeSection === 'kelas'" :kelas="props.progresKelas" />
+<Tugas v-else-if="activeSection === 'tugas'" :tugas="props.tugas" />
+<Pesan v-else-if="activeSection === 'pesan'" :user="props.user" />
 
     </div>
   </LesGoLayout>

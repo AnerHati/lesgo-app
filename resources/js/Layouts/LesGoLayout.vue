@@ -69,7 +69,10 @@ function handleLogout() {
                     @click="handleNavigate(item.id)"
                 >
                     <span class="text-lg leading-none w-6 text-center shrink-0" v-html="item.icon"></span>
-                    <span>{{ item.name }}</span>
+                    <span class="flex-1 text-left">{{ item.name }}</span>
+                    <span v-if="item.id === 'pesan' && $page.props.unreadSendersCount > 0" class="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0">
+                        {{ $page.props.unreadSendersCount }}
+                    </span>
                 </button>
             </nav>
 

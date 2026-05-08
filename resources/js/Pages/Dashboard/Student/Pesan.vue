@@ -3,145 +3,195 @@
     <section class="bg-gradient-to-r from-blue-50 via-sky-50 to-indigo-50 rounded-xl border border-blue-100 p-8 relative overflow-hidden">
       <div class="hero-orb-1 opacity-30"></div>
       <h2 class="text-4xl font-black text-gray-900 relative z-10">Pesan</h2>
-      <p class="text-sm text-gray-700 mt-3 font-medium relative z-10">Kirim dan lihat pesanmu dengan tutor.</p>
-      <p class="text-sm text-gray-700 font-medium relative z-10">Jaga komunikasi agar belajar semakin efektif, Kenzo!</p>
+      <p class="text-sm text-gray-700 mt-3 font-medium relative z-10">Kirim dan lihat pesanmu dengan kolega.</p>
+      <p class="text-sm text-gray-700 font-medium relative z-10">Jaga komunikasi agar belajar semakin efektif!</p>
     </section>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-[600px]">
       <!-- Chat List -->
       <div class="bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
-        <div v-if="pesanList.length > 0" class="overflow-y-auto flex-1 p-2">
-          <div class="p-3 border-b border-gray-100 hover:bg-gray-50 rounded-xl cursor-pointer transition flex items-center justify-between bg-blue-50/50">
-            <div class="flex items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=Isyana+Randini&background=eff6ff&color=2563eb" class="w-12 h-12 rounded-full">
-              <div>
-                <h4 class="text-sm font-black text-gray-900">Isyana Randini</h4>
-                <p class="text-xs font-medium text-gray-500 mt-0.5 truncate w-32">Permintaan booking kamu sudah sa...</p>
+        <div v-if="contacts.length > 0" class="overflow-y-auto flex-1 p-2 space-y-1">
+          <div 
+            v-for="contact in contacts" 
+            :key="contact.id"
+            @click="selectContact(contact)"
+            class="p-3 border-b border-gray-100 hover:bg-gray-50 rounded-xl cursor-pointer transition flex items-center justify-between"
+            :class="activeContact?.id === contact.id ? 'bg-blue-50/50 border-blue-100' : ''"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <img :src="`https://ui-avatars.com/api/?name=${contact.name.replace(/ /g, '+')}&background=eff6ff&color=2563eb`" class="w-12 h-12 rounded-full shrink-0">
+              <div class="min-w-0 pr-2">
+                <h4 class="text-sm font-black text-gray-900 truncate">{{ contact.name }}</h4>
+                <p class="text-xs font-medium text-gray-500 mt-0.5 truncate w-32">Klik untuk melihat pesan</p>
               </div>
             </div>
-            <span class="text-[10px] font-bold text-gray-400">10.30</span>
-          </div>
-          
-          <div class="p-3 border-b border-gray-100 hover:bg-gray-50 rounded-xl cursor-pointer transition flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=James+Smith&background=f3f4f6&color=4b5563" class="w-12 h-12 rounded-full">
-              <div>
-                <h4 class="text-sm font-black text-gray-900">James Smith</h4>
-                <p class="text-xs font-medium text-gray-500 mt-0.5 truncate w-32">Perbaiki bagian esensial, sisanya su...</p>
-              </div>
+            <div v-if="contact.unread_count > 0" class="w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+              {{ contact.unread_count }}
             </div>
-            <span class="text-[10px] font-bold text-gray-400">07.00</span>
-          </div>
-
-          <div class="p-3 border-b border-gray-100 hover:bg-gray-50 rounded-xl cursor-pointer transition flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=Jonathan+Jack&background=f3f4f6&color=4b5563" class="w-12 h-12 rounded-full">
-              <div>
-                <h4 class="text-sm font-black text-gray-900">Jonathan Jack</h4>
-                <p class="text-xs font-medium text-gray-500 mt-0.5 truncate w-32">Perbaiki bagian esensial, sisanya su...</p>
-              </div>
-            </div>
-            <span class="text-[10px] font-bold text-gray-400">Kemarin</span>
-          </div>
-
-          <div class="p-3 border-b border-gray-100 hover:bg-gray-50 rounded-xl cursor-pointer transition flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=James+Smith&background=f3f4f6&color=4b5563" class="w-12 h-12 rounded-full">
-              <div>
-                <h4 class="text-sm font-black text-gray-900">James Smith</h4>
-                <p class="text-xs font-medium text-gray-500 mt-0.5 truncate w-32">Perbaiki bagian esensial, sisanya su...</p>
-              </div>
-            </div>
-            <span class="text-[10px] font-bold text-gray-400">Kemarin</span>
-          </div>
-
-          <div class="p-3 hover:bg-gray-50 rounded-xl cursor-pointer transition flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <img src="https://ui-avatars.com/api/?name=Jonathan+Jack&background=f3f4f6&color=4b5563" class="w-12 h-12 rounded-full">
-              <div>
-                <h4 class="text-sm font-black text-gray-900">Jonathan Jack</h4>
-                <p class="text-xs font-medium text-gray-500 mt-0.5 truncate w-32">Perbaiki bagian esensial, sisanya su...</p>
-              </div>
-            </div>
-            <span class="text-[10px] font-bold text-gray-400">Kemarin</span>
           </div>
         </div>
         
         <div v-else class="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <span class="text-6xl mb-4 opacity-80">📭</span>
-          <h3 class="text-lg font-bold text-gray-900">Belum ada obrolan</h3>
-          <p class="text-xs text-gray-500 mt-2 font-medium">Mulai ngobrol dengan tutor untuk mendiskusikan materi pelajaranmu!</p>
-          <button @click="$emit('navigate', 'cari')" class="mt-6 px-6 py-2.5 rounded-xl text-sm font-bold bg-[#2563EB] text-white hover:bg-blue-700 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-100">Cari Tutor</button>
+          <h3 class="text-lg font-bold text-gray-900">Belum ada kontak</h3>
+          <p class="text-xs text-gray-500 mt-2 font-medium">Kamu baru bisa mengirim pesan jika sudah memiliki kelas yang aktif.</p>
         </div>
       </div>
 
       <!-- Active Chat Area -->
-      <div class="md:col-span-2 bg-white rounded-[24px] border border-gray-200 shadow-sm flex flex-col h-full">
+      <div v-if="activeContact" class="md:col-span-2 bg-white rounded-[24px] border border-gray-200 shadow-sm flex flex-col h-full notranslate">
         <!-- Chat Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white rounded-t-[24px]">
             <div class="flex items-center gap-3">
             <div class="relative">
-              <img src="https://ui-avatars.com/api/?name=Isyana+Randini&background=eff6ff&color=2563eb" class="w-10 h-10 rounded-full">
+              <img :src="`https://ui-avatars.com/api/?name=${activeContact.name.replace(/ /g, '+')}&background=eff6ff&color=2563eb`" class="w-10 h-10 rounded-full">
               <span class="absolute bottom-0 right-0 pulse-dot"></span>
             </div>
             <div>
-              <h4 class="text-sm font-black text-gray-900 leading-tight">Isyana Randini</h4>
+              <h4 class="text-sm font-black text-gray-900 leading-tight">{{ activeContact.name }}</h4>
               <p class="text-[10px] font-bold text-emerald-500 mt-0.5 flex items-center gap-1">Online</p>
             </div>
-          </div>
-          <div class="flex items-center gap-3 text-gray-400">
-            <button class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center transition">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-            </button>
-            <button class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center transition">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
-            </button>
           </div>
         </div>
 
         <!-- Chat Messages -->
-        <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/30">
-          <!-- Received Message -->
-          <div class="flex items-end gap-2">
-            <div class="bg-[#F3F4F6] text-gray-800 rounded-2xl rounded-bl-none px-5 py-3.5 max-w-[80%]">
-              <p class="text-sm font-medium leading-relaxed">Permintaan booking kamu sudah saya terima, apakah bisa mulai pada Senin, 16 Mei 15:30?</p>
-              <span class="text-[10px] text-gray-400 font-bold block mt-2">10:00</span>
-            </div>
-          </div>
-
-          <!-- Sent Message -->
-          <div class="flex items-end justify-end gap-2">
-            <div class="bg-[#C8EEFF] text-gray-900 rounded-2xl rounded-br-none px-5 py-3.5 max-w-[80%]">
-              <p class="text-sm font-medium leading-relaxed">Baik, Pastikan datang ke rumah saya sesuai alamat saya ya</p>
-              <div class="flex items-center justify-end gap-1 mt-2">
-                <span class="text-blue-500 font-bold text-xs">✓</span>
-                <span class="text-[10px] text-gray-500 font-bold">10:50</span>
+        <div id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/30">
+          <div v-for="msg in messages" :key="msg.id" class="flex w-full" :class="msg.sender_id === props.user.id ? 'justify-end' : 'justify-start'">
+            <div v-if="msg.sender_id === props.user.id" class="flex items-end justify-end gap-2 max-w-[80%]">
+              <div class="bg-[#C8EEFF] text-gray-900 rounded-2xl rounded-br-none px-5 py-3.5">
+                <p class="text-sm font-medium leading-relaxed whitespace-pre-wrap">{{ msg.message }}</p>
+                <div class="flex items-center justify-end gap-1 mt-2">
+                  <span v-if="msg.is_read" class="text-blue-500 font-bold text-xs">✓✓</span>
+                  <span v-else class="text-gray-400 font-bold text-xs">✓</span>
+                  <span class="text-[10px] text-gray-500 font-bold">{{ formatTime(msg.created_at) }}</span>
+                </div>
               </div>
             </div>
+            <div v-else class="flex items-end gap-2 max-w-[80%]">
+              <div class="bg-[#F3F4F6] text-gray-800 rounded-2xl rounded-bl-none px-5 py-3.5">
+                <p class="text-sm font-medium leading-relaxed">{{ msg.message }}</p>
+                <span class="text-[10px] text-gray-400 font-bold block mt-2">{{ formatTime(msg.created_at) }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div v-if="messages.length === 0" class="text-center text-gray-400 text-sm font-bold mt-10">
+            Mulai percakapan dengan {{ activeContact.name }}
           </div>
         </div>
 
         <!-- Chat Input -->
         <div class="p-4 bg-white border-t border-gray-100 rounded-b-[24px]">
-          <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-full pr-1.5 pl-4 py-1.5 shadow-sm focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-100 transition">
-            <button class="text-gray-400 hover:text-gray-600 transition">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+          <form @submit.prevent="sendMessage" class="flex items-center gap-3 bg-white border border-gray-200 rounded-full pr-1.5 pl-4 py-1.5 shadow-sm focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-100 transition">
+            <input v-model="newMessage" type="text" placeholder="Ketik pesan..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-700 px-2">
+            <button type="submit" class="w-10 h-10 rounded-full bg-[#2563EB] text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm shrink-0" :disabled="!newMessage.trim()">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
             </button>
-            <input type="text" placeholder="..." class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-medium text-gray-700 px-2">
-            <button class="w-10 h-10 rounded-full bg-[#2563EB] text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-            </button>
-</div>
-</div>
-</div>
-</div>
-</div>
+          </form>
+        </div>
+      </div>
+      
+      <div v-else class="md:col-span-2 bg-gray-50 rounded-[24px] border border-gray-200 shadow-sm flex flex-col items-center justify-center h-full text-center">
+          <span class="text-6xl mb-4 opacity-50">💬</span>
+          <p class="text-gray-400 font-bold">Pilih kontak untuk melihat obrolan</p>
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { router } from '@inertiajs/vue3'
+
+const props = defineProps({
+  user: { type: Object, required: true }
+})
 
 defineEmits(['navigate'])
 
-const pesanList = ref([1, 2, 3, 4, 5])
+const contacts = ref([])
+const activeContact = ref(null)
+const messages = ref([])
+const newMessage = ref('')
+const pollingInterval = ref(null)
+
+onMounted(() => {
+    fetchContacts()
+    pollingInterval.value = setInterval(() => {
+        if (activeContact.value) {
+            fetchMessages(activeContact.value.id, false)
+            fetchContacts() // Also polling contacts to update unread_count per contact
+        }
+    }, 5000)
+})
+
+onUnmounted(() => {
+    if (pollingInterval.value) clearInterval(pollingInterval.value)
+})
+
+async function fetchContacts() {
+    try {
+        const res = await window.axios.get('/api/chat/contacts')
+        contacts.value = res.data
+        if (contacts.value.length > 0 && !activeContact.value) {
+            selectContact(contacts.value[0])
+        }
+    } catch (e) {
+        console.error("Gagal load contacts", e)
+    }
+}
+
+function selectContact(contact) {
+    activeContact.value = contact
+    fetchMessages(contact.id, true)
+}
+
+async function fetchMessages(contactId, scroll = false) {
+    try {
+        const res = await window.axios.get(`/api/chat/messages/${contactId}`)
+        messages.value = res.data
+        if (scroll) {
+            setTimeout(() => {
+                const el = document.getElementById('chat-container')
+                if (el) el.scrollTop = el.scrollHeight
+            }, 100)
+        }
+        
+        // Reload global notification badge and contact list unread counts
+        router.reload({ only: ['unreadSendersCount'] })
+        
+        // Mark locally as read
+        const contact = contacts.value.find(c => c.id === contactId)
+        if (contact) contact.unread_count = 0
+        
+    } catch (e) {
+        console.error("Gagal load messages", e)
+    }
+}
+
+async function sendMessage() {
+    if (!newMessage.value.trim() || !activeContact.value) return
+    try {
+        const text = newMessage.value
+        newMessage.value = ''
+        const res = await window.axios.post('/api/chat/messages', {
+            receiver_id: activeContact.value.id,
+            message: text
+        })
+        messages.value.push(res.data)
+        setTimeout(() => {
+            const el = document.getElementById('chat-container')
+            if (el) el.scrollTop = el.scrollHeight
+        }, 100)
+    } catch (e) {
+        console.error("Gagal send message", e)
+    }
+}
+
+function formatTime(dateString) {
+    if (!dateString) return ''
+    const d = new Date(dateString)
+    return `${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`
+}
 </script>

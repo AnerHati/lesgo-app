@@ -61,13 +61,57 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+
+const props = defineProps({
+  semuaJadwal: { type: Array, default: () => [] },
+  kelasAktif: { type: Array, default: () => [] }
+})
+
 const jadwalFilter = ref('hari_ini')
-const jadwalTabs = [{ id: 'hari_ini', label: 'Hari Ini' }, { id: 'besok', label: 'Besok' }, { id: 'mendatang', label: 'Mendatang' }]
-const jadwalItems = [
-  { id: 1, name: 'Kenzo Aliza', mapel: 'Matematika', jenjang: 'SD', lokasi: 'Tukad Badung, no 12', jadwal: 'Senin, 17:00-18:00', progress: 2, day: 'hari_ini' },
-  { id: 2, name: 'Eka Savitry', mapel: 'Informatika', jenjang: 'SMP', lokasi: 'Online', jadwal: 'Senin, 15:30-16:00', progress: 2, day: 'hari_ini' },
-  { id: 5, name: 'Rina Putri', mapel: 'Matematika', jenjang: 'SMP', lokasi: 'Denpasar Barat', jadwal: 'Selasa, 09:00-10:00', progress: 1, day: 'besok' },
-  { id: 8, name: 'Iqbal Mustofa', mapel: 'Matematika', jenjang: 'SD', lokasi: 'Denpasar Selatan', jadwal: 'Rabu, 10:00-11:00', progress: 0, day: 'mendatang' },
+const jadwalTabs = [
+  { id: 'hari_ini', label: 'Hari Ini' }, 
+  { id: 'besok', label: 'Besok' }, 
+  { id: 'mendatang', label: 'Mendatang' }
 ]
-const filteredJadwal = computed(() => jadwalItems.filter(j => j.day === jadwalFilter.value))
+
+// Memformat data asli dari database agar sesuai persis dengan desain HTML
+const formattedJadwal = computed(() => {
+  return props.semuaJadwal.map(jadwal => {
+    const classData = jadwal.study_class;
+    const student = classData?.student;
+    const profile = student?.student_profile;
+    
+    // Tentukan kategori tab (Hari Ini / Besok / Mendatang)
+    const start = new Date(jadwal.start_time);
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    
+    let dayCategory = 'mendatang';
+    if (start.toDateString() === today.toDateString()) {
+      dayCategory = 'hari_ini';
+    } else if (start.toDateString() === tomorrow.toDateString()) {
+      dayCategory = 'besok';
+    }
+    
+    // Format Hari & Jam (Misal: "Senin, 15:00-16:30")
+    const hari = start.toLocaleDateString('id-ID', { weekday: 'long' });
+    const jamMulai = start.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const jamSelesai = new Date(jadwal.end_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    
+    return {
+      id: jadwal.id,
+      name: student ? student.name : 'Siswa',
+      mapel: classData?.subject?.name || 'Mata Pelajaran',
+      jenjang: profile?.grade_level || 'SD/SMP/SMA',
+      lokasi: classData?.learning_method === 'offline' ? (student?.address || 'Alamat Siswa') : 'Online',
+      jadwal: `${hari}, ${jamMulai}-${jamSelesai}`,
+      progress: 1, // Progress simulasi
+      day: dayCategory
+    };
+  });
+});
+
+const filteredJadwal = computed(() => formattedJadwal.value.filter(j => j.day === jadwalFilter.value))
 </script>
+
