@@ -93,6 +93,7 @@ class RegisteredUserController extends Controller
         // Auto login user to proceed with registration steps
         Auth::login($user);
 
+        // Semua role harus melewati langkah verifikasi (step 2 & step 3)
         return redirect()->route('register.step2');
     }
 }
