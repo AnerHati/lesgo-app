@@ -143,6 +143,14 @@ public function receivedReviews()
     }
 
     /**
+     * Ambil role model berdasarkan nama.
+     */
+    public function getRole(string $roleName): ?Role
+    {
+        return $this->roles()->where('name', $roleName)->first();
+    }
+
+    /**
      * Ambil data pivot role_user untuk role tertentu.
      */
     public function getRolePivot(string $roleName)
