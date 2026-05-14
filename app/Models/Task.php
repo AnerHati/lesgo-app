@@ -3,13 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\TaskStatus;
 
 class Task extends Model
 {
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'study_class_id',
+        'title',
+        'description',
+        'deadline',
+        'status',
+        'score',
+    ];
     
     protected $casts = [
         'deadline' => 'datetime',
+        'status' => TaskStatus::class,
     ];
 
    // Tambahkan di dalam class Task

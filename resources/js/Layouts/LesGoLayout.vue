@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
+import ErrorBoundary from '@/Components/ErrorBoundary.vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth.user)
@@ -114,7 +115,9 @@ function handleLogout() {
 
             <!-- Content Area -->
             <div class="flex-1 overflow-y-auto p-4 lg:p-8">
-                <slot />
+                <ErrorBoundary>
+                    <slot />
+                </ErrorBoundary>
             </div>
 
         </main>

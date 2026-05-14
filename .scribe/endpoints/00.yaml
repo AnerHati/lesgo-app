@@ -1,0 +1,1111 @@
+name: Endpoints
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/tutors
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6ImhIMDJGRVA2ZkRQT2o1YVg2NU02bVE9PSIsInZhbHVlIjoiR3V2bEtVVnRwUnAxa3czcGpubS84dXBtRi9rZE0rYTRUcGVjamJRejlMSUxOem1QNC9wTEhTbHkzSFhpM3hWdlp2cjJyQ1UvbFF3ekpmQUJ5bnA5Umw4V0xxQUswVzJMNzlENXFOWFhnck9OREVZYm15TndSOFVrN0JHd0Y5Mk0iLCJtYWMiOiJmNDU5Y2I4YmNhNTg4Y2JkNzQzNDYwZjgyZmM1ODg4NDUxNGZiOTdmZTA0YTlkMTg2ZDEwOWUxZTczNWJmMjhkIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:17 GMT; Max-Age=7199; path=/; samesite=lax; laravel-session=eyJpdiI6Ik5ZK0dhbnR0aElneElpeXVVNzV0bnc9PSIsInZhbHVlIjoiQnkzUlJUTGVSNkF1eFhtOERDbGhHSGxqNmJZNlhvN2JiTWVwM28zbldqU2tweGY3ZitsS1pVdlJRVWRkdmtpOVJlUTUrVUl5cUdINVppaHBWRXBPQ2djTmJVYlFoMlA3U3JsZ3JwVlNQblJGWWllMWloTXNabjBtcXRlbXdSZXAiLCJtYWMiOiI2MmQyNDEwNGU5ZDU5MTNiMjExMzIzNGM1ZjdmOTg2YzAwM2Q5MmRkMTcyMTQ1OWIyMDEwMDRiMmMyZTJkZjFiIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:17 GMT; Max-Age=7199; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/chat/contacts
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6ImV6UFNXTGQ3ZjR6d1p4QWVWTlhabXc9PSIsInZhbHVlIjoiZ0RxQkFBVVVMdm1Yd1Bjc1JWZ2tDOXgrYmxQYTRoVm00aXJBUTNuK3pzZ3BROXVPb0g5MS8xSEticy8ySXBlQnBKaGdzdEZLZUJJU21tS29aU0lZWHlHSndESGRPSDZ3aDl2ZkFzUDgvY21IU093ZkNIMEdZR0d6bFRtUDY4cEUiLCJtYWMiOiJkYTM3YmU3NDExN2ViZDI5NmQ3ODViMDU1ZTdiNzY5M2EzOTcwNTdlOWExNWZhZDExZWFkZDgyNGVlNzZiNzc0IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6ImZxMXZjaytndGdIRWh3Vyt1VGRPTVE9PSIsInZhbHVlIjoiUkVoSXJwQ3NPQWRIamQ5d3BLV0s1LzFHUCtSM3R2UTVhQWFnejFtNk1HSS9WKzlQMnFDR1RlMmlXZk92V1B0bjZ1bW1Weng3YmJlc2oxRG1iQXhUb2JudDE0OXIxNnVZdWc0WVJrbWJzRGJZVVhIczdPNjl1eWZKSWVpdk1TSUQiLCJtYWMiOiIyZjA5ZTM5NjZhZmRiNjAwMTdjNmFjYjE1YTZmZjNhMGMwNzM5OTg4ODQ1NzBhMWM3YTY1OTZhMWI1MjQzYjdlIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/chat/messages/{contactId}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      contactId:
+        custom: []
+        name: contactId
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      contactId: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6Ik03MlpkVnp6Tm41QnpNNjVlSDd6WUE9PSIsInZhbHVlIjoiSDRlVEhPVXRGWEdTMWltaE1VZC9lOThmTnBOK0lBa1F3ZXlWZ2E0ZEpJZTZIWWc3dWJBOFZ3c3NBcDYraUptVVJVSHpEQTg2VUhWeWlyZkgrdXdITGR6TytSK2cwSkswbHlTM0xUVlpxNERCbXpVOXVTeHFpemdRRlFDUE1oVzYiLCJtYWMiOiJkMTk4ZjhiNDNkMjNkODFlYWRjNWExZTE1ODQ0ZDFkMDE3ZjA3MTYxNmNhOWUxYzkwYmExY2YyM2UwMDdmMDFkIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6Iml2b0dQVGZKbE5xelZwMlJZdjBkcmc9PSIsInZhbHVlIjoiZlEvK1ZsQnA5Y3JSYzQ5MENOWWR3dlBVQldPSzMvc0xDblN1NzJVRVVzdkltbzlDSGpOd2hmaXh5bGExUVpvaEtKVkxnbWZhMEkweDdkUExBUlhkdURNZ3dqdHQ5YmZYVjcwMXJ6cnRhb3dIUEtUMW5sM0x1bzBlYW9aR1FNOHkiLCJtYWMiOiIxOTBmN2I3YWRiNDE3ZjI3NWE5ZWQ5MzExMGUzNzFhMjA4MmQxNjZlNjVjZWRkZDA1Zjk3NTFhMjM4OTY1MTY5IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/chat/messages
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      receiver_id:
+        custom: []
+        name: receiver_id
+        description: 'The <code>id</code> of an existing record in the users table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      message:
+        custom: []
+        name: message
+        description: 'Must not be greater than 5000 characters.'
+        required: true
+        example: mqeopfuudtdsufvyvddqa
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      receiver_id: consequatur
+      message: mqeopfuudtdsufvyvddqa
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/reviews/tutor/{tutorId}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      tutorId:
+        custom: []
+        name: tutorId
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      tutorId: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkpKNnRwalhHNmgzUVdZUG1jaGkzNmc9PSIsInZhbHVlIjoidHBPL200NEhTSm1HYi96bXBOeEM3MFRIVnVsT2ZINmdoODh4a2M0amJNNmhVckdNZGwxck1pMmpJZEp1WkxTa0ZZbWFJeHZoLzBQdWY3bU9CSkJkblVLYkNWUjQ0d0dTWi9zeENlNElNUnVWQ0cwNmwvM1BwaEZXS1k3ME9ycmUiLCJtYWMiOiI3Yjg4NzE4ZDMzODdjM2ZkYjFiZDhmM2I2MzY5M2Y2MWNjMjc3NmQ2ZGFkNGFjYTc5MjRmY2UxOGY4ODZjNmJjIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6IjJlZHFWSE42OGh4YzVnbnViTWFjeFE9PSIsInZhbHVlIjoiOWVVSUM0amZJN2lqYitEeCtwUkEva1BzMmNDck1DUHV2NmZ0WFZHRWJ5V0o2aDNCbUR0Ym5LSkZ4cUU4SGJPUFYrbHNtVmtXditmSEhoNU5ZQzZ4VlpJTHJHcy9pWmNSK2twbGZJSXpySWlEVHVSbHNnVlYyUWRYaElVTkxmUnkiLCJtYWMiOiI4YjhhNGZiNThjNmVkZTU1ZjQzZTAxZjNmMzA2NTBhMzUzMGUxZmNjNjYzM2FkMmM5YzcwZjRhNWRlZTY1ZTg3IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/attachments
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      file:
+        custom: []
+        name: file
+        description: 'Must be a file. Must not be greater than 10240 kilobytes.'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      attachable_type:
+        custom: []
+        name: attachable_type
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      attachable_id:
+        custom: []
+        name: attachable_id
+        description: ''
+        required: true
+        example: 17
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      attachable_type: consequatur
+      attachable_id: 17
+    fileParameters:
+      file: null
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/attachments/{id}/download'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the attachment.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkhVbFFmYWk1UGFBd2ZxNlNVRng2RkE9PSIsInZhbHVlIjoieDNZZ241aWpOL0hLUm5XcEZhZU0wblZSWkY3cmhYbE9mTU5IMEZiZkkvb3MwUjJJWERTQlcwSnFvWEQyejJ3d2N6eE5lY2Z1WHFaMUJqbXlYUmQ0VHBORElNRmZDS2dvZ3NxbkllcVBCMjdhVXdReU5GSS8wc1JTK1RMQWpoTG0iLCJtYWMiOiJkMTE4ZDQ1YTk5Yjc5MGFhYWY4NmE2NTcyMzdlZDExY2UxMWJjZWM1YWZlNjdiZTlmNWI1NjdmZTJiN2EyMWU3IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6IndydkVnMGRpVkNJQzB5bmF1QW5xdkE9PSIsInZhbHVlIjoiejNlMDBKZlZ4WFJIcXJHZW54SGZ3YWdVNVo4aDFROVl4dy9iUWZqV2VDNW53aHplc0ZBdTNJL2NaZFYremVFS01QcjBjVlBVdFU0WUdrMVNjQ1NFcjBsV29FNy9ncnJjSTRQdm5UNTNVRGJGNDZnVEUzdmdlTllZOFUwbE9GVzYiLCJtYWMiOiJkNWNkYTY4MGRjN2I3OTc1NWI2MGYzMjJlYjU1NDVlY2Q2ZjhmZWQzMjE3ZDcwMTgwNThjOGM4NTQ5MWZmOWY1IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/attachments/{id}'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the attachment.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/notifications
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6Ii9YZjduVUFGY0JQVkVFWVljUE9qTkE9PSIsInZhbHVlIjoiRWZNR0ZUL2Q4TStuMERxWVUrUWVaL2R6Y3Q1SmIyNmQ0UFZ6TFM3NHVaaW9ETDRPZDEraGw3ZHRhNUJsand0bnBZVXJkWGdkV21IbkNHVW5oS1d0OHltSU0wVHkwYVoraDNpZE5pdzAvK0txYmtybzQrano1S0x4amhEMEozVlIiLCJtYWMiOiJlY2ExZDg2YmMwMzRhYmE1NTIwYWQ3ZjZjN2MxZDgzYjJhNTg2NjkyM2FlMDcwZDg1MjNjZDk2ZjAyMmMzMTljIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6ImJsclc3ZUc1cGFwV1hNY2YrUmFxcnc9PSIsInZhbHVlIjoicUs5d1c0YXZ4alhabENZOTIyYVBoVmZtNE8ySFNFOEIzWWdMN3VxbTQ0T2tOYUZuQWFBQ1Q1aTV2SXJ0azNpYWUrK0ZtRDhETEZaWU02My96Q1Z0WjM0K1ZwQ0l2OVdpTXRSdWFjZk45QitoekNEZmFHaHFUVWprQjRSOGlLT2EiLCJtYWMiOiJhMDU4NzI4YzEwNThmZjhlODJkY2JmOGE1NWE3OGNmZTc5ZmUxOTY0MzJkYzRmYzI4NmE1OGI4MzlkZGUxMmEyIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/notifications/unread-count
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkdYUXpKcFc2NXFTWS91S3pPSWJlOEE9PSIsInZhbHVlIjoiUkpoME13UHFicHFEdHRXV29WcDIwcUpNQ0FHVDJobzc5WnhPcE9ZbTlTSnFzbGRqNUk5ZXJ1aTVlMXdpN2xCTFBHa3JFVkgyT2VyYXp2VC9wQlhFYnJPYm5BaVZ3RWJtRE1EVlRUVXBqRjBZblN0MFY3UnR5K1gvZm9qeDFFQk4iLCJtYWMiOiJlOTA1ZDVhZjMzMTdiN2QyZmRhNWQwNzk5OTk0ZTIzMDM5NTI2YTkxMDA4NTU3NDlhNGYzOTJhZWNlM2FkYTkwIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6IlVVdVErNDBnNldmYTRvYURSbTRpZkE9PSIsInZhbHVlIjoiSVVRVktsT0oxQnpqM1BLY2Z1U3drR3NrczZYUW1LNUhBWFdqcCtCMGFxS2dJTmNwZ3E1a1llZ2g4SE1JNldLTFBMN1BoWTZoeFpEMnY2aXUwYnU1RS9rWnVWZlhMWGNUTXA2a1pWenZzTTArbWg5Y2ZKMFAyRldtWi9aOGE5eHciLCJtYWMiOiI0NGU5ZDRkYmJiN2M3MjQwYjYzODJmYTc0NWQ3NDQ1YzFkOGNjMDQ5MzE5NDczZjU0ZDY1N2E3YmRjMjg2N2U5IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/notifications/{id}/read'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the notification.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/notifications/read-all
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/payment/{transactionId}/snap-token'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      transactionId:
+        custom: []
+        name: transactionId
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      transactionId: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/payment/{transactionId}/refund'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Siswa mengajukan permintaan refund untuk transaksi yang sudah dibayar.'
+      description: 'Hanya bisa dilakukan jika kelas masih pending atau active dan belum ada jadwal completed.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      transactionId:
+        custom: []
+        name: transactionId
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      transactionId: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/reviews
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      study_class_id:
+        custom: []
+        name: study_class_id
+        description: 'The <code>id</code> of an existing record in the study_classes table.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      rating:
+        custom: []
+        name: rating
+        description: 'Must be at least 1. Must not be greater than 5.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      comment:
+        custom: []
+        name: comment
+        description: 'Must not be greater than 1000 characters.'
+        required: false
+        example: qeopfuudtdsufvyvddqam
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      study_class_id: consequatur
+      rating: 3
+      comment: qeopfuudtdsufvyvddqam
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/tasks/{id}/quiz'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Mengambil data soal beserta pilihan gandanya (untuk di-render di Vue)'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the task.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IkZNZURHRkE3THdveUg0U2FMOW94c0E9PSIsInZhbHVlIjoiaFlRYjliTFB2VCtzUHhUMjl0OWk4VDd2NXFSZ1ljMDFxcjZMQVBPTWk4dFNtMkZjVzZDZXlFdEprR0xlTGJTdEM0VkdUdnFFcnJZdGl6L0RjVk1uRU5FOVZhbkQ2TGlvaE52eHk3Z0djdVFyL2RFemt5RDRacFl0R1B6QkowTnUiLCJtYWMiOiI5N2FiM2ZhY2YzZDliMTc1ZWQ2YjM3NjY3ODAxMzUyZThhMWEyNDgwNzViYmQyYjQxNDg5MTMzZThjYmVmNmMyIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6IjJ1MkFYMUNKRkVDdVBiY1Q5bVUyYWc9PSIsInZhbHVlIjoiangrRDh0aTNXdFVnRTNzcWV0bVBwMWlOWi9nVGl2cENzQ0JhYkhKSVFacWFqOGxvQ2p6Q2t6YUM0N0NVbVJPbGxOb3g4QUdIMTk0SDNCa2daWmZ6WGp0VXZsNms0OUg4N1BFQ0gwY1ZnNlJlTU5sNVBzSENZdVFnVUcvSGhRVFYiLCJtYWMiOiIyNGI1Y2ZjMmIyZWJjNmRlZTMyNzg1ZDg2NWE2NzNjNjI2MWRkNjYxYzhhMTQ4NWE0NGE0M2NkMmQxMjU4MDRiIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/tasks/{id}/submit'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Memproses jawaban yang di-submit siswa dan menghitung skor otomatis'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the task.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      answers:
+        custom: []
+        name: answers
+        description: 'Memastikan frontend mengirim array jawaban (format: [ question_id => option_id ]).'
+        required: true
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      answers: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/classes/{id}/materials'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the class.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6IllHRXFzS0JKVStXdFBJWmg4d1VzWVE9PSIsInZhbHVlIjoidVcyWVIrL1U1dU9NMjBNWThXRGFnd0VKbXAxMnprMHVLUVFYYUdTVXN4YnB4S3hIU09zSFd4MGZWOStYMzdYL3IrNnJkYXArR0s5OTFQbUF2cEtPK29TY0w0V0hCMUJNMmVseFBaYUx4VkpSZGw5UmF0NTNBOVo1c1pyZWxNUDgiLCJtYWMiOiJlM2I1YTY5MzJjYTdkYTFmZTdiMjA1Mzk1ZWUxYTc5ZThmMGZhYzJmNmY3M2Y5OWZiOTJiNzIyNTg4YjZlODM5IiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6IkFibVBCYnp6Mjh1eWQxakdiNmlUdGc9PSIsInZhbHVlIjoiQ0hDVjliYVZSNTgrQ25pTnMyb2pvTWpJSnM2TmJSQ0hpOHBZU0U5Vm9WeC91V0J6cm1xcVFId3VwblJIdStqZUcrd2E2V0o1Wks5UGpNOWV1eVpLbk9aVUhrZ1R4MllZSmx6WVZUUHZteDgyc1A0K0Z3Vk96YlF5QlhNMGNQWkkiLCJtYWMiOiI1YzgyNjM0N2I4MGM0ZTc1MzEyY2UwYjljZWEwNDJhYjM0Y2E0NmY2ZGM1NDUyNzMyM2Q1MDI5OWZjOWNkNjNhIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/transactions/student
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Endpoint untuk Siswa melihat riwayat tagihan/pembayaran mereka'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6ImZ4NmNWcllPQWRmSFBRUnBKbjkvalE9PSIsInZhbHVlIjoiT0VuRjVQUDQrUTdwak8wK3Zpbk9ZTzJXd2RXRjJBYlA0QWpMbzk0b2RTYVhWUGl1bGh6aDFZWVlOcVRBeVpYemppTkFNeWZ5TDdlOTlRZUpwVXA4KzdBY2RXRld6WTJqRmFMeEs4U3BFc1IzcmhlclNPUHNzRTYvbFVkS3MrRFMiLCJtYWMiOiJkYjk5YjI4NDM2OWQ0ZTUxOWI3NjkwZTJmMWQ1N2YzMmQ0MzY3Mjc5MzY2ODdlMDJlOWE3OGMwZGM4ZGY3NjZkIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6Imx6anN4dkxnbGdaeHFwazBqWXVySnc9PSIsInZhbHVlIjoiWW1ZYWIyL05IWkdyMnRUbTI1bnZLOGFaY1RjOHo5WmVEWDhjTkczRHdNcDJHRDFFZFJQUkRIa1JuUTJJdlZiMlVXQ0tMRmROMEpaVkw1QXVwdzlvNWtpOEpieCtWb080bHBYUmNiZTUvdlNMYU5WZHgxQVduQUYydmpYMjVGNGUiLCJtYWMiOiIwNmFlMjRmY2QyNGI5ZmExYzY4ZGIzMWVlOWY5ODM1YjQ4YTg1NTRjMjdhMzYwZjJlN2FkNzMwMTlmODVhM2QzIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/tasks/{id}/questions'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Menyimpan soal kuis baru beserta pilihan ganda yang dibuat oleh Tutor'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the task.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: consequatur
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      question:
+        custom: []
+        name: question
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      type:
+        custom: []
+        name: type
+        description: ''
+        required: true
+        example: multiple_choice
+        type: string
+        enumValues:
+          - multiple_choice
+          - essay
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      options:
+        custom: []
+        name: options
+        description: 'Pastikan tutor mengirim minimal 2 pilihan jawaban (misal A dan B). Must have at least 2 items.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'options[].label':
+        custom: []
+        name: 'options[].label'
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'options[].value':
+        custom: []
+        name: 'options[].value'
+        description: 'A, B, C, D.'
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'options[].is_correct':
+        custom: []
+        name: 'options[].is_correct'
+        description: 'Teks jawaban (misal: "Tokyo").'
+        required: true
+        example: false
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      question: consequatur
+      type: multiple_choice
+      options:
+        -
+          label: consequatur
+          value: consequatur
+          is_correct: false
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/transactions/tutor
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Endpoint untuk Tutor melihat riwayat pendapatan mereka'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+          set-cookie: 'XSRF-TOKEN=eyJpdiI6Ik8zMXVkSTB0a3lHM0EvOXNnTE9QT3c9PSIsInZhbHVlIjoidTFyVmFvaEtOYkdpUDA1eUEraGZlaUtNRE5CbnVRVTFMODJpOHpuMEZMTXZHdzZ5SWsrNmNoNXplRm9za050NUhZdGxOODJhK21ZYnNoMEFyYlZWVWtsZWE0TDFMMk1lSlFLS2JGV1VTNTdKMnM5NjZLOGUxaUxaSjdybzBIRnMiLCJtYWMiOiJkYmJhYjBkMWFjN2YyZDUxMTEzZjA5NjYxMjUzNGFhMGI5ZTljYWE2ZGJlZmM5ZjQ1ZjBhN2ExZDAxYWUxNzJlIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; samesite=lax; laravel-session=eyJpdiI6IkZCc3pPZkRRaDY2OEhHY3FMVTBDWlE9PSIsInZhbHVlIjoiZjg4dXM2bEVzdHU5bTA5bzV0VmRlVWVPMDZFQ0xWTTcxWEwvb2k2cmlNYkVDWlE0RUtlbU5WR3RYK3FnbUZxalVyMEpiYThLTUI4K3JGazZyS2RTQ0hYN1RiU2c3OXNWL2NnOFhKMmQwMEROZno5RzQ0ZEZjZnlzUkliNWV0UXEiLCJtYWMiOiIyOWMxMzk2YTcwNWZiZmVkNGRhNGJkZmY5M2ZjOTAzNDdmMGUxY2MxZTRmOTI4ODEwNThhZTZiMjFiZjk5OTgxIiwidGFnIjoiIn0%3D; expires=Thu, 14 May 2026 20:20:18 GMT; Max-Age=7200; path=/; httponly; samesite=lax'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/midtrans/webhook
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

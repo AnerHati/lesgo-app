@@ -7,9 +7,14 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
+use App\Models\Role;
 
 class UsersTable
 {
@@ -18,43 +23,68 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Nama')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
-                TextColumn::make('phone')
-                    ->searchable(),
-                TextColumn::make('latitude')
-                    ->numeric()
+                    ->label('Email')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('profile_photo_path')
-                    ->searchable(),
                 TextColumn::make('active_role')
-                    ->searchable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                    ->label('Peran Aktif')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'siswa' => 'info',
+                        'tutor' => 'success',
+                        'orangtua' => 'warning',
+                        'admin' => 'danger',
+                        default => 'gray',
+                    }),
+                ToggleColumn::make('is_verified')
+                    ->label('Terverifikasi')
+                    ->getStateUsing(function ($record) {
+                        $role = $record->roles()->where('name', 'tutor')->first();
+                        return $role ? $role->pivot->is_verified : false;
+                    })
+                    ->updateStateUsing(function ($record, $state) {
+                        $tutorRole = Role::where('name', 'tutor')->first();
+                        if ($tutorRole) {
+                            $record->roles()->updateExistingPivot($tutorRole->id, [
+                                'is_verified' => $state,
+                                'verified_at' => $state ? now() : null,
+                            ]);
+                        }
+                    })
+                    ->disabled(fn ($record) => $record->active_role !== 'tutor'),
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Bergabung')
+                    ->dateTime('d M Y')
+                    ->sortable(),
             ])
             ->filters([
+                SelectFilter::make('active_role')
+                    ->label('Filter Peran')
+                    ->options([
+                        'siswa' => 'Siswa',
+                        'tutor' => 'Tutor',
+                        'orangtua' => 'Orang Tua',
+                    ]),
                 TrashedFilter::make(),
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
+                Action::make('lihat_ktp')
+                    ->label('Lihat KTP')
+                    ->icon('heroicon-o-identification')
+                    ->color('info')
+                    ->visible(fn ($record) => $record->active_role === 'tutor' && $record->roles()->where('name', 'tutor')->first()?->pivot->ktp_path)
+                    ->url(fn ($record) => \Storage::url($record->roles()->where('name', 'tutor')->first()->pivot->ktp_path), true),
+                Action::make('lihat_ijazah')
+                    ->label('Lihat Ijazah')
+                    ->icon('heroicon-o-academic-cap')
+                    ->color('info')
+                    ->visible(fn ($record) => $record->active_role === 'tutor' && $record->roles()->where('name', 'tutor')->first()?->pivot->ijazah_path)
+                    ->url(fn ($record) => \Storage::url($record->roles()->where('name', 'tutor')->first()->pivot->ijazah_path), true),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

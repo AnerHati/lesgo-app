@@ -18,7 +18,15 @@ class SubjectResource extends Resource
 {
     protected static ?string $model = Subject::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedTag;
+
+    protected static ?string $navigationLabel = 'Mata Pelajaran';
+
+    protected static ?string $pluralLabel = 'Mata Pelajaran';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Master Data';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
     {

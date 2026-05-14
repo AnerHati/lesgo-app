@@ -20,7 +20,13 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedUsers;
+
+    protected static ?string $navigationLabel = 'Semua Pengguna';
+
+    protected static ?string $pluralLabel = 'Semua Pengguna';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Manajemen Pengguna';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -37,7 +43,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            \App\Filament\Resources\Users\RelationManagers\RolesRelationManager::class,
         ];
     }
 

@@ -25,6 +25,9 @@
         :semuaJadwal="props.semuaJadwal"
         :kelasAktif="props.kelasAktif"
       />
+      <Ketersediaan v-else-if="activeSection === 'ketersediaan'" 
+        :availabilities="props.availabilities"
+      />
       <Keuangan v-else-if="activeSection === 'keuangan'" />
       <Pesan v-else-if="activeSection === 'pesan'" :user="props.user" />
       <Ulasan v-else-if="activeSection === 'ulasan'" />
@@ -51,6 +54,7 @@ import CariSiswa from './CariSiswa.vue'
 import Siswa from './Siswa.vue'
 import Kelas from './Kelas.vue'
 import Jadwal from './Jadwal.vue'
+import Ketersediaan from './Ketersediaan.vue'
 import Keuangan from './Keuangan.vue'
 import Pesan from './Pesan.vue'
 import Ulasan from './Ulasan.vue'
@@ -62,6 +66,7 @@ const props = defineProps({
   semuaJadwal: { type: Array, default: () => [] },
   user: { type: Object, default: () => ({}) },
   statistik: { type: Object, default: () => ({ totalPenghasilan: 0, totalTransaksi: 0 }) },
+  availabilities: { type: Array, default: () => [] },
 })
 
 const activeSection = ref('beranda')
@@ -72,6 +77,7 @@ const sideNav = [
   { id: 'siswa_saya', name: 'Siswa Saya', icon: '👥' },
   { id: 'kelas_saya', name: 'Kelas Saya', icon: '🎓' },
   { id: 'jadwal', name: 'Jadwal', icon: '📅' },
+  { id: 'ketersediaan', name: 'Ketersediaan', icon: '🕒' },
   { id: 'keuangan', name: 'Keuangan', icon: '💰' },
   { id: 'pesan', name: 'Pesan', icon: '✉️' },
   { id: 'ulasan', name: 'Ulasan', icon: '⭐' },
@@ -80,7 +86,7 @@ const sideNav = [
 
 const sectionTitles = {
   beranda: 'Beranda Tutor', cari_siswa: 'Cari Siswa', siswa_saya: 'Siswa Saya',
-  kelas_saya: 'Kelas Saya', jadwal: 'Jadwal', keuangan: 'Keuangan',
+  kelas_saya: 'Kelas Saya', jadwal: 'Jadwal', ketersediaan: 'Ketersediaan Jadwal', keuangan: 'Keuangan',
   pesan: 'Pesan', ulasan: 'Ulasan', pengaturan: 'Pengaturan',
 }
 

@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
 {
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'study_class_id',
+        'content',
+    ];
 
     public function studyClass()
     {

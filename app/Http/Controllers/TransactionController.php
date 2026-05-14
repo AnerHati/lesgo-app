@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use App\Models\StudyClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\TransactionStatus;
 
 class TransactionController extends Controller
 {
@@ -51,7 +52,7 @@ class TransactionController extends Controller
     return Transaction::create([
         'study_class_id' => $class->id,
         'amount' => $pricePerHour * $jumlahPertemuan,
-        'status' => 'pending',
+        'status' => TransactionStatus::PENDING,
         'payment_method' => null,
         'paid_at' => null
     ]);

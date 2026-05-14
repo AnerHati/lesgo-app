@@ -5,18 +5,34 @@
               <p class="text-gray-500 font-medium text-sm">Kelola semua sesi mengajarmu dengan mudah.</p>
             </div>
 
-            <!-- Tabs -->
-            <div class="flex items-center gap-2">
-              <div class="flex items-center rounded-xl bg-white border border-gray-200 p-1">
-                <button v-for="tab in jadwalTabs" :key="tab.id" type="button"
-                  class="px-6 py-2.5 rounded-lg text-sm font-bold transition"
-                  :class="jadwalFilter === tab.id ? 'bg-[#2563EB] text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'"
-                  @click="jadwalFilter = tab.id"
-                >{{ tab.label }}</button>
+            <!-- Tabs & Date Filter -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
+                <div class="flex items-center rounded-xl bg-white border border-gray-200 p-1 shrink-0">
+                  <button v-for="tab in jadwalTabs" :key="tab.id" type="button"
+                    class="px-6 py-2.5 rounded-lg text-sm font-bold transition"
+                    :class="(jadwalFilter === tab.id && !selectedDate) ? 'bg-[#2563EB] text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'"
+                    @click="jadwalFilter = tab.id; selectedDate = ''"
+                  >{{ tab.label }}</button>
+                </div>
               </div>
-              <button type="button" class="w-11 h-11 shrink-0 rounded-xl border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center justify-center shadow-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-              </button>
+
+              <div class="flex items-center gap-2 shrink-0">
+                <input 
+                  type="date" 
+                  v-model="selectedDate" 
+                  class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-700 outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-blue-100 transition shadow-sm"
+                >
+                <button 
+                  v-if="selectedDate" 
+                  @click="selectedDate = ''" 
+                  type="button" 
+                  class="w-11 h-11 shrink-0 rounded-xl border border-red-100 bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center shadow-sm transition" 
+                  title="Reset Filter Tanggal"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
             </div>
 
             <!-- Schedule Cards -->
@@ -68,6 +84,7 @@ const props = defineProps({
 })
 
 const jadwalFilter = ref('hari_ini')
+const selectedDate = ref('')
 const jadwalTabs = [
   { id: 'hari_ini', label: 'Hari Ini' }, 
   { id: 'besok', label: 'Besok' }, 
@@ -99,6 +116,12 @@ const formattedJadwal = computed(() => {
     const jamMulai = start.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     const jamSelesai = new Date(jadwal.end_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
     
+    // Format rawDate YYYY-MM-DD untuk filter kalender
+    const year = start.getFullYear();
+    const month = String(start.getMonth() + 1).padStart(2, '0');
+    const day = String(start.getDate()).padStart(2, '0');
+    const rawDate = `${year}-${month}-${day}`;
+    
     return {
       id: jadwal.id,
       name: student ? student.name : 'Siswa',
@@ -107,11 +130,17 @@ const formattedJadwal = computed(() => {
       lokasi: classData?.learning_method === 'offline' ? (student?.address || 'Alamat Siswa') : 'Online',
       jadwal: `${hari}, ${jamMulai}-${jamSelesai}`,
       progress: 1, // Progress simulasi
-      day: dayCategory
+      day: dayCategory,
+      rawDate: rawDate
     };
   });
 });
 
-const filteredJadwal = computed(() => formattedJadwal.value.filter(j => j.day === jadwalFilter.value))
+const filteredJadwal = computed(() => {
+  if (selectedDate.value) {
+    return formattedJadwal.value.filter(j => j.rawDate === selectedDate.value);
+  }
+  return formattedJadwal.value.filter(j => j.day === jadwalFilter.value);
+})
 </script>
 

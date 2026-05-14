@@ -6,6 +6,7 @@ use App\Models\Review;
 use App\Models\StudyClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\StudyClassStatus;
 
 class ReviewController extends Controller
 {
@@ -26,7 +27,7 @@ class ReviewController extends Controller
         }
 
         // Pastikan kelas sudah selesai atau aktif
-        if (!in_array($studyClass->status, ['active', 'completed'])) {
+        if (!in_array($studyClass->status, [StudyClassStatus::ACTIVE, StudyClassStatus::COMPLETED])) {
             abort(403, 'Kelas belum bisa di-review.');
         }
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -11,9 +13,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use SoftDeletes;
+
+    /**
+     * Tentukan siapa yang bisa mengakses panel Filament.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Hanya user dengan role 'admin' atau email spesifik yang bisa masuk
+        return $this->hasRole('admin') || str_ends_with($this->email, '@lesgo.com');
+    }
 
     public function writtenReviews()
 {
@@ -45,6 +56,8 @@ public function receivedReviews()
         'active_role',
         'latitude',
         'longitude',
+        'pairing_token',
+        'pairing_token_expires_at',
     ];
 
     /**
@@ -55,6 +68,7 @@ public function receivedReviews()
     protected $hidden = [
         'password',
         'remember_token',
+        'pairing_token',
     ];
 
     /**
@@ -67,7 +81,57 @@ public function receivedReviews()
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'phone' => 'encrypted',
+            'address' => 'encrypted',
+            'pairing_token_expires_at' => 'datetime',
         ];
+    }
+
+    // ── Pairing Methods ──────────────────────────────────────────────────
+
+    /**
+     * Generate pairing token for student.
+     */
+    public function generatePairingToken(): string
+    {
+        $token = strtoupper(bin2hex(random_bytes(3))); // 6 chars
+        $this->update([
+            'pairing_token' => $token,
+            'pairing_token_expires_at' => now()->addMinutes(30),
+        ]);
+
+        return $token;
+    }
+
+    /**
+     * Pair parent with student using token.
+     */
+    public function pairWithStudent(string $token, string $relationship = 'anak'): bool
+    {
+        if ($this->active_role !== 'parent') {
+            return false;
+        }
+
+        $student = self::where('pairing_token', $token)
+            ->where('pairing_token_expires_at', '>', now())
+            ->first();
+
+        if (!$student) {
+            return false;
+        }
+
+        // Link student to parent
+        $this->children()->syncWithoutDetaching([
+            $student->id => ['relationship' => $relationship]
+        ]);
+
+        // Invalidate token
+        $student->update([
+            'pairing_token' => null,
+            'pairing_token_expires_at' => null,
+        ]);
+
+        return true;
     }
 
     // ── Relationships ────────────────────────────────────────────────────
@@ -213,6 +277,20 @@ public function receivedReviews()
     {
         return $this->belongsToMany(Subject::class, 'tutor_subjects')
                     ->withPivot('price_per_hour')
+                    ->withTimestamps();
+    }
+
+    // Relasi untuk Tutor: Ketersediaan Jadwal
+    public function availabilities()
+    {
+        return $this->hasMany(TutorAvailability::class, 'tutor_id');
+    }
+
+    // Relasi untuk Lencana (Gamifikasi)
+    public function badges(): BelongsToMany
+    {
+        return $this->belongsToMany(Badge::class)
+                    ->withPivot('earned_at')
                     ->withTimestamps();
     }
 

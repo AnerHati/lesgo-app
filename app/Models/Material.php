@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\MaterialStatus;
 
 class Material extends Model
 {
@@ -17,6 +18,10 @@ class Material extends Model
         'content', 
         'order_index', 
         'status'
+    ];
+
+    protected $casts = [
+        'status' => MaterialStatus::class,
     ];
 
     public function studyClass()

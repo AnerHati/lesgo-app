@@ -5,11 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\TransactionStatus;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 
 class Transaction extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'study_class_id',
@@ -23,6 +34,7 @@ class Transaction extends Model
     protected $casts = [
         'paid_at' => 'datetime',
         'amount' => 'decimal:2',
+        'status' => TransactionStatus::class,
     ];
 
     public function studyClass(): BelongsTo

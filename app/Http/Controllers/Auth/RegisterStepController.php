@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RegisterStepController extends Controller
 {
@@ -41,18 +42,23 @@ class RegisterStepController extends Controller
     public function storeStep3(Request $request)
     {
         $request->validate([
-            'ktp' => ['required', 'image', 'max:5120'],
-            'ijazah' => ['nullable', 'image', 'max:5120'],
+            'ktp' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'ijazah' => ['nullable', 'image', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ]);
 
         $user = Auth::user();
         $activeRole = $user->active_role;
 
-        $ktpPath = $request->file('ktp')->store('verifications/ktp', 'public');
-        
+        // Simpan KTP ke disk PRIVATE dengan nama acak (tidak bisa diakses via URL)
+        $ktpFile = $request->file('ktp');
+        $ktpFilename = Str::random(40) . '.' . $ktpFile->getClientOriginalExtension();
+        $ktpPath = $ktpFile->storeAs('verifications/ktp', $ktpFilename, 'private');
+
         $ijazahPath = null;
         if ($request->hasFile('ijazah')) {
-            $ijazahPath = $request->file('ijazah')->store('verifications/ijazah', 'public');
+            $ijazahFile = $request->file('ijazah');
+            $ijazahFilename = Str::random(40) . '.' . $ijazahFile->getClientOriginalExtension();
+            $ijazahPath = $ijazahFile->storeAs('verifications/ijazah', $ijazahFilename, 'private');
         }
 
         // Update di pivot role_user

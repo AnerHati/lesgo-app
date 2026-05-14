@@ -101,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
@@ -114,21 +114,46 @@ const contacts = ref([])
 const activeContact = ref(null)
 const messages = ref([])
 const newMessage = ref('')
-const pollingInterval = ref(null)
 
 onMounted(() => {
     fetchContacts()
-    pollingInterval.value = setInterval(() => {
-        if (activeContact.value) {
-            fetchMessages(activeContact.value.id, false)
-            fetchContacts() // Also polling contacts to update unread_count per contact
-        }
-    }, 5000)
-})
+
+    // Dengarkan private channel milik user yang login
+    window.Echo.private(`chat.${props.user.id}`)
+        .listen('MessageSent', (e) => {
+            console.log('Pesan baru masuk:', e.message);
+            
+            // Jika pesan berasal dari kontak yang sedang dibuka, tambahkan ke list
+            if (activeContact.value && e.message.sender_id === activeContact.value.id) {
+                messages.value.push(e.message);
+                scrollToBottom();
+            } else {
+                // Jika dari kontak lain, update unread count di list kontak
+                const contact = contacts.value.find(c => c.id === e.message.sender_id);
+                if (contact) {
+                    contact.unread_count++;
+                } else {
+                    // Refresh kontak jika ada pesan dari orang baru
+                    fetchContacts();
+                }
+            }
+
+            // Reload global notification badge
+            router.reload({ only: ['unreadSendersCount'] });
+        });
+});
 
 onUnmounted(() => {
-    if (pollingInterval.value) clearInterval(pollingInterval.value)
-})
+    // Bersihkan listener ketika keluar dari halaman chat
+    window.Echo.leaveChannel(`chat.${props.user.id}`);
+});
+
+function scrollToBottom() {
+    nextTick(() => {
+        const el = document.getElementById('chat-container')
+        if (el) el.scrollTop = el.scrollHeight
+    });
+}
 
 async function fetchContacts() {
     try {
@@ -152,10 +177,7 @@ async function fetchMessages(contactId, scroll = false) {
         const res = await window.axios.get(`/api/chat/messages/${contactId}`)
         messages.value = res.data
         if (scroll) {
-            setTimeout(() => {
-                const el = document.getElementById('chat-container')
-                if (el) el.scrollTop = el.scrollHeight
-            }, 100)
+            scrollToBottom();
         }
         
         // Reload global notification badge and contact list unread counts
@@ -180,10 +202,7 @@ async function sendMessage() {
             message: text
         })
         messages.value.push(res.data)
-        setTimeout(() => {
-            const el = document.getElementById('chat-container')
-            if (el) el.scrollTop = el.scrollHeight
-        }, 100)
+        scrollToBottom();
     } catch (e) {
         console.error("Gagal send message", e)
     }

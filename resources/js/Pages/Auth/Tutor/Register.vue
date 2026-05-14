@@ -1,13 +1,19 @@
 <template>
   <div class="min-h-screen bg-[#F8FAFC] font-sans flex flex-col items-center">
     <nav class="max-w-7xl mx-auto w-full px-8 py-6 flex justify-between items-center bg-transparent">
-      <Link href="/" class="flex items-center gap-3">
-        <div class="text-green-500 text-3xl">🌱</div>
-        <div class="leading-tight">
-          <div class="text-2xl font-extrabold text-[#10B981] tracking-tight">LesGo</div>
-          <div class="text-[10px] text-gray-500 font-medium tracking-wide">Digital Tutoring Ecosystem</div>
-        </div>
-      </Link>
+      <div class="flex items-center gap-6">
+        <Link href="/pilih-daftar" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition font-bold group">
+          <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          <span class="hidden sm:inline">Kembali</span>
+        </Link>
+        <Link href="/" class="flex items-center gap-3">
+          <div class="text-green-500 text-3xl">🌱</div>
+          <div class="leading-tight">
+            <div class="text-2xl font-extrabold text-[#10B981] tracking-tight">LesGo</div>
+            <div class="text-[10px] text-gray-500 font-medium tracking-wide">Digital Tutoring Ecosystem</div>
+          </div>
+        </Link>
+      </div>
       <div class="flex items-center space-x-8">
         <Link href="/login-tutor" class="text-blue-700 font-bold hover:underline">Masuk</Link>
         <button class="bg-blue-600 text-white px-8 py-2.5 rounded-lg font-bold shadow-md cursor-default">Daftar Tutor</button>

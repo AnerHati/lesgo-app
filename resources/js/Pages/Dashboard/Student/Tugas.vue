@@ -336,10 +336,7 @@ const tugasSayaItems = computed(() => {
   });
 });
 
-const komentarTugas = ref({
-  4: [{ id: 1, author: 'Tutor John Doe', time: '17 Mei 2026, 20:01', message: 'Bagus, grammar kamu sudah rapi. Tetap latihan ya.' }],
-  5: [{ id: 1, author: 'Tutor Nadriin', time: '15 Mei 2026, 21:10', message: 'UI kamu clean, tinggal perbaiki spacing pada card kedua.' }],
-})
+const komentarTugas = ref({})
 
 const tugasBelumSelesaiCount = computed(() => tugasSayaItems.value.filter((t) => t.statusType === 'pending').length)
 const filteredTugasSaya = computed(() => {

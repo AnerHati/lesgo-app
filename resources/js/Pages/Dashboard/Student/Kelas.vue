@@ -96,7 +96,7 @@
                       </div>
                     </div>
 
-                    <div class="mt-auto pt-2">
+                    <div class="mt-auto pt-2 space-y-2">
                       <template v-if="k.status === 'upcoming'">
                         <button
                           type="button"
@@ -122,6 +122,7 @@
                         <div class="grid grid-cols-2 gap-3">
                           <button
                             type="button"
+                            @click="openReviewModal(k)"
                             class="py-3 rounded-xl font-bold text-sm bg-[#1A56DB] text-white hover:bg-blue-700 shadow-sm transition"
                           >
                             Review Materi
@@ -134,6 +135,14 @@
                           </button>
                         </div>
                       </template>
+                      
+                      <button 
+                        v-if="k.canRefund"
+                        @click="ajukanRefund(k)"
+                        class="w-full py-2 rounded-xl font-bold text-xs text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition"
+                      >
+                        Batalkan & Ajukan Refund
+                      </button>
                     </div>
                   </article>
                 </div>
@@ -367,6 +376,64 @@
               </div>
             </template>
           </div>
+
+          <!-- Review Modal -->
+          <div v-if="isReviewModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
+              <h3 class="text-xl font-black text-gray-900 mb-4">Review Tutor & Materi</h3>
+              
+              <div v-if="selectedClassForReview" class="mb-4">
+                <p class="text-sm text-gray-500 font-medium">Tutor: <span class="text-gray-800 font-bold">{{ selectedClassForReview.tutor }}</span></p>
+                <p class="text-sm text-gray-500 font-medium">Kelas: <span class="text-gray-800 font-bold">{{ selectedClassForReview.subject }}</span></p>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-1">Rating (1-5)</label>
+                  <div class="flex gap-2">
+                    <button 
+                      v-for="star in 5" 
+                      :key="star"
+                      type="button"
+                      @click="reviewForm.rating = star"
+                      class="text-3xl focus:outline-none transition-transform hover:scale-110"
+                      :class="star <= reviewForm.rating ? 'text-amber-400' : 'text-gray-200'"
+                    >
+                      ★
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-1">Ulasan (Opsional)</label>
+                  <textarea 
+                    v-model="reviewForm.comment"
+                    rows="3" 
+                    placeholder="Bagaimana pengalaman belajarmu?"
+                    class="w-full rounded-xl border border-gray-200 px-4 py-2 text-sm focus:border-blue-400 focus:ring-blue-100"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="flex justify-end gap-3 mt-6">
+                <button 
+                  type="button" 
+                  @click="closeReviewModal"
+                  class="px-4 py-2 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200"
+                >
+                  Batal
+                </button>
+                <button 
+                  type="button" 
+                  @click="submitReview"
+                  :disabled="isSubmittingReview"
+                  class="px-4 py-2 rounded-xl text-sm font-bold text-white bg-[#2563EB] hover:bg-blue-700 disabled:opacity-70"
+                >
+                  {{ isSubmittingReview ? 'Menyimpan...' : 'Kirim Review' }}
+                </button>
+              </div>
+            </div>
+          </div>
 </template>
 
 <script setup>
@@ -389,6 +456,42 @@ const createMaterialError = ref('')
 const createMaterialSuccess = ref('')
 const newMaterialForm = ref({ title: '', description: '', status: 'locked' })
 
+// Review Modal State
+const isReviewModalOpen = ref(false)
+const selectedClassForReview = ref(null)
+const reviewForm = ref({ rating: 5, comment: '' })
+const isSubmittingReview = ref(false)
+
+function openReviewModal(kelas) {
+    selectedClassForReview.value = kelas;
+    reviewForm.value = { rating: 5, comment: '' };
+    isReviewModalOpen.value = true;
+}
+
+function closeReviewModal() {
+    isReviewModalOpen.value = false;
+    selectedClassForReview.value = null;
+}
+
+async function submitReview() {
+    if (!selectedClassForReview.value) return;
+    
+    isSubmittingReview.value = true;
+    try {
+        const res = await window.axios.post('/api/reviews', {
+            study_class_id: selectedClassForReview.value.id,
+            rating: reviewForm.value.rating,
+            comment: reviewForm.value.comment
+        });
+        alert('Review berhasil dikirim!');
+        closeReviewModal();
+    } catch (err) {
+        alert(err.response?.data?.message || 'Gagal mengirim review.');
+    } finally {
+        isSubmittingReview.value = false;
+    }
+}
+
 const kelasTabs = [
   { id: 'semua', label: 'Semua' },
   { id: 'aktif', label: 'Aktif' },
@@ -401,6 +504,7 @@ const kelasItems = computed(() => {
       // Find nearest schedule or first schedule
       let scheduleText = 'Belum dijadwalkan';
       let statusStr = k.status;
+      let hasCompletedSchedule = false;
       if (k.schedules && k.schedules.length > 0) {
           const firstSch = k.schedules[0];
           const start = new Date(firstSch.start_time);
@@ -411,7 +515,15 @@ const kelasItems = computed(() => {
           if (start > new Date() && statusStr !== 'active') {
               statusStr = 'upcoming';
           }
+          hasCompletedSchedule = k.schedules.some(s => s.status === 'completed');
       }
+
+      let transaction = null;
+      if (k.transactions && k.transactions.length > 0) {
+          transaction = k.transactions.find(t => t.status === 'paid');
+      }
+      const canRefund = transaction && !hasCompletedSchedule && statusStr !== 'completed' && statusStr !== 'cancelled';
+
       return {
           id: k.id,
           subject: k.subject ? k.subject.name : 'Unknown',
@@ -421,9 +533,23 @@ const kelasItems = computed(() => {
           status: statusStr,
           icon: k.subject?.icon || '📚',
           progress: k.progress_percentage || 0,
+          canRefund,
+          transactionId: transaction?.id,
       }
   });
 });
+
+async function ajukanRefund(kelas) {
+  if (confirm('Apakah Anda yakin ingin mengajukan refund untuk kelas ini? Aksi ini tidak dapat dibatalkan.')) {
+    try {
+      const res = await window.axios.post(`/api/payment/${kelas.transactionId}/refund`);
+      alert('Berhasil: ' + res.data.message);
+      window.location.reload();
+    } catch (err) {
+      alert('Gagal: ' + (err.response?.data?.message || 'Terjadi kesalahan saat mengajukan refund'));
+    }
+  }
+}
 
 const jumlahKelasAktifMingguIni = computed(() => kelasItems.value.filter((k) => k.status === 'active').length)
 

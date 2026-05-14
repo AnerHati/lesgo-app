@@ -8,10 +8,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Seed roles terlebih dahulu
-        $this->call(RoleSeeder::class);
+        // Seed data master
+        $this->call([
+            RoleSeeder::class,
+            SubjectSeeder::class,
+            PackageSeeder::class,
+        ]);
         
-        // Seed data aplikasi
+        // Seed data dummy/testing
         $this->call(DummyDataSeeder::class);
     }
 }

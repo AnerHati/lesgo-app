@@ -2,13 +2,19 @@
   <div class="min-h-screen bg-[#F8FAFC] font-sans flex flex-col items-center">
 
     <nav class="max-w-7xl mx-auto w-full px-8 py-6 flex justify-between items-center bg-transparent">
-      <Link href="/" class="flex items-center gap-3 cursor-pointer">
-        <div class="text-green-500 text-3xl">🌱</div>
-        <div class="leading-tight">
-          <div class="text-2xl font-extrabold text-[#10B981] tracking-tight">LesGo</div>
-          <div class="text-[10px] text-gray-500 font-medium tracking-wide">Digital Tutoring Ecosystem</div>
-        </div>
-      </Link>
+      <div class="flex items-center gap-6">
+        <Link href="/pilih-daftar" class="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition font-bold group">
+          <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          <span class="hidden sm:inline">Kembali</span>
+        </Link>
+        <Link href="/" class="flex items-center gap-3 cursor-pointer">
+          <div class="text-green-500 text-3xl">🌱</div>
+          <div class="leading-tight">
+            <div class="text-2xl font-extrabold text-[#10B981] tracking-tight">LesGo</div>
+            <div class="text-[10px] text-gray-500 font-medium tracking-wide">Digital Tutoring Ecosystem</div>
+          </div>
+        </Link>
+      </div>
       <div class="hidden md:flex space-x-8 text-gray-600 font-medium text-sm">
         <Link href="/" class="hover:text-blue-600 transition">Beranda</Link>
         <a href="#" class="hover:text-blue-600 transition">Program</a>

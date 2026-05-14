@@ -20,7 +20,15 @@ class StudyClassResource extends Resource
 {
     protected static ?string $model = StudyClass::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedBookOpen;
+
+    protected static ?string $navigationLabel = 'Daftar Kelas';
+
+    protected static ?string $pluralLabel = 'Daftar Kelas';
+
+    protected static string | \UnitEnum | null $navigationGroup = 'Monitoring & ERP';
+
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Schema $schema): Schema
     {

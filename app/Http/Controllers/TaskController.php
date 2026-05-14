@@ -7,9 +7,17 @@ use App\Models\TaskSubmission;
 use App\Models\TaskAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GamificationService;
 
 class TaskController extends Controller
 {
+    protected $gamificationService;
+
+    public function __construct(GamificationService $gamificationService)
+    {
+        $this->gamificationService = $gamificationService;
+    }
+
     /**
      * Mengambil data soal beserta pilihan gandanya (untuk di-render di Vue)
      */
@@ -85,12 +93,16 @@ class TaskController extends Controller
         // 4. Kalkulasi nilai akhir (skala 100)
         $score = 0;
         if ($totalQuestions > 0) {
-            $score = round(($correctAnswers / $totalQuestions) * 100);
+            $score = (int) round(($correctAnswers / $totalQuestions) * 100);
         }
 
         // Update skor di database
         $submission->update(['score' => $score]);
         
+        // ── Gamifikasi: Berikan Poin ──
+        // Contoh: Memberikan +50 poin setiap kali mengumpulkan tugas
+        $this->gamificationService->addPointsToUser(Auth::user(), 50);
+
         // Update status di table tasks (jika perlu)
         $task->update(['status' => 'submitted']);
 
@@ -101,7 +113,8 @@ class TaskController extends Controller
             'total_questions' => $totalQuestions
         ]);
     }
-        /**
+
+    /**
      * Menyimpan soal kuis baru beserta pilihan ganda yang dibuat oleh Tutor
      */
     public function createQuestion(Request $request, $id)
@@ -140,5 +153,4 @@ class TaskController extends Controller
             'question' => $taskQuestion->load('options')
         ], 201);
     }
-
 }

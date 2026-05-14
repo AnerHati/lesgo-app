@@ -6,7 +6,9 @@ use App\Models\StudyClass;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class NewBookingNotification extends Notification
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class NewBookingNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

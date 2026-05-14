@@ -46,14 +46,43 @@
 </template>
 
 <script setup>
-const progres = [
-  { id: 1, subject: 'Matematika', topic: 'Transformasi Geometri', tutor: 'Isyana Randini', schedule: 'Senin, 15:00', percent: 15, eval: 84, icon: '📐' },
-  { id: 2, subject: 'Bahasa Jepang', topic: 'Huruf Hiragana', tutor: 'Renata', schedule: 'Rabu, 10:00', percent: 65, eval: 84, icon: '🇯🇵' },
-  { id: 3, subject: 'Bahasa Inggris', topic: 'Simple Present Tense', tutor: 'Jhon Doe', schedule: 'Jumat, 16:00', percent: 40, eval: 84, icon: '🇬🇧' },
-  { id: 4, subject: 'Bahasa Indonesia', topic: 'Paragraf Deduktif', tutor: 'Jonathan', schedule: 'Kamis, 14:00', percent: 95, eval: 84, icon: '🇮🇩' },
-  { id: 5, subject: 'Matematika', topic: 'Transformasi Geometri', tutor: 'Isyana Randini', schedule: 'Senin, 15:00', percent: 15, eval: 84, icon: '📐' },
-  { id: 6, subject: 'Bahasa Jepang', topic: 'Huruf Hiragana', tutor: 'Renata', schedule: 'Rabu, 10:00', percent: 65, eval: 84, icon: '🇯🇵' },
-  { id: 7, subject: 'Bahasa Inggris', topic: 'Simple Present Tense', tutor: 'Jhon Doe', schedule: 'Jumat, 16:00', percent: 40, eval: 84, icon: '🇬🇧' },
-  { id: 8, subject: 'Bahasa Indonesia', topic: 'Paragraf Deduktif', tutor: 'Jonathan', schedule: 'Kamis, 14:00', percent: 95, eval: 84, icon: '🇮🇩' },
-]
+import { computed } from 'vue'
+
+const props = defineProps({
+  kelas: { type: Array, default: () => [] }
+})
+
+const progres = computed(() => {
+  return props.kelas.map(k => {
+      // Tentukan jadwal terdekat
+      let scheduleText = 'Belum dijadwalkan';
+      if (k.schedules && k.schedules.length > 0) {
+          const firstSch = k.schedules[0];
+          const start = new Date(firstSch.start_time);
+          const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+          scheduleText = `${days[start.getDay()]}, ${start.getHours().toString().padStart(2,'0')}:${start.getMinutes().toString().padStart(2,'0')}`;
+      }
+
+      // Hitung evaluasi rata-rata dari tugas jika ada skor
+      let evalScore = '-';
+      if (k.tasks && k.tasks.length > 0) {
+          const gradedTasks = k.tasks.filter(t => t.score !== null);
+          if (gradedTasks.length > 0) {
+              const totalScore = gradedTasks.reduce((acc, t) => acc + t.score, 0);
+              evalScore = Math.round(totalScore / gradedTasks.length);
+          }
+      }
+
+      return {
+          id: k.id,
+          subject: k.subject ? k.subject.name : 'Belum Ditentukan',
+          topic: k.paket_mengajar || 'Materi Umum',
+          tutor: k.tutor ? k.tutor.name : 'Menunggu Tutor',
+          schedule: scheduleText,
+          percent: k.progress_percentage || 0,
+          eval: evalScore,
+          icon: k.subject?.icon || '📚',
+      }
+  })
+})
 </script>

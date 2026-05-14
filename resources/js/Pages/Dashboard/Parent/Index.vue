@@ -6,12 +6,15 @@
     @navigate="goNav"
   >
     <template #header-left>
-      <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-full px-4 py-1.5 shadow-sm cursor-pointer hover:bg-gray-50 transition w-fit">
+      <div v-if="activeChild" class="flex items-center gap-3 bg-white border border-gray-200 rounded-full px-4 py-1.5 shadow-sm cursor-pointer hover:bg-gray-50 transition w-fit">
           <div class="w-6 h-6 rounded-full overflow-hidden shrink-0 border border-gray-100">
-              <img src="https://ui-avatars.com/api/?name=Kenzo+Aliza&background=ffedd5&color=c2410c" class="w-full h-full object-cover">
+              <img :src="`https://ui-avatars.com/api/?name=${activeChild.name.replace(/ /g, '+')}&background=ffedd5&color=c2410c`" class="w-full h-full object-cover">
           </div>
-          <span class="text-sm font-bold text-gray-800">Kenzo <span class="text-gray-500 font-medium">(SD)</span></span>
-          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          <span class="text-sm font-bold text-gray-800">{{ activeChild.name.split(' ')[0] }} <span class="text-gray-500 font-medium">({{ activeChild.student_profile?.grade_level || 'Siswa' }})</span></span>
+          <svg v-if="children.length > 1" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+      <div v-else class="flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full px-4 py-1.5 shadow-sm">
+          <span class="text-xs font-bold text-orange-600">Belum ada anak tertaut</span>
       </div>
     </template>
 
@@ -36,6 +39,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import LesGoLayout from '@/Layouts/LesGoLayout.vue'
 import Beranda from './Beranda.vue';
 import CariTutor from './CariTutor.vue';
@@ -53,6 +57,10 @@ const props = defineProps({
     default: 'Dashboard Orang Tua - LesGo',
   },
 });
+
+const page = usePage();
+const children = computed(() => page.props.children || []);
+const activeChild = computed(() => children.value[0] || null);
 
 const activeSection = ref('beranda');
 

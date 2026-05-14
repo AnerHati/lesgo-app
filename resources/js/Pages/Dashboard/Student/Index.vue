@@ -13,11 +13,16 @@
   :tugas="props.tugas"
   :progres="props.progresKelas"
   :user="props.user"
+  :badges="props.badges"
+  :totalPoints="props.totalPoints"
+  :nextBadge="props.nextBadge"
 />
-<CariTutor v-else-if="activeSection === 'cari'" @navigate="goNav" :tutors="props.tutors" :kelas="props.progresKelas" />
+<CariTutor v-else-if="activeSection === 'cari'" @navigate="goNav" :kelas="props.progresKelas" />
 <Kelas v-else-if="activeSection === 'kelas'" :kelas="props.progresKelas" />
 <Tugas v-else-if="activeSection === 'tugas'" :tugas="props.tugas" />
 <Pesan v-else-if="activeSection === 'pesan'" :user="props.user" />
+<Progres v-else-if="activeSection === 'progres'" :kelas="props.progresKelas" />
+<Pengaturan v-else-if="activeSection === 'pengaturan'" :user="props.user" />
 
     </div>
   </LesGoLayout>
@@ -43,7 +48,9 @@ import Pengaturan from './Pengaturan.vue'
   jadwal: { type: Array, default: () => [] },
   tugas: { type: Array, default: () => [] },
   user: { type: Object, default: () => ({}) },
-  tutors: { type: Array, default: () => [] },
+  badges: { type: Array, default: () => [] },
+  totalPoints: { type: Number, default: 0 },
+  nextBadge: { type: Object, default: null },
   japaneseClassData: { type: Object, default: null },
 })
 

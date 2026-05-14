@@ -13,19 +13,22 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
-    {
-        $user = $request->user();
+  public function handle(Request $request, Closure $next, string ...$roles): Response
+{
+    $user = $request->user();
 
-        if (!$user) {
-            abort(403, 'Unauthorized Access.');
-        }
-
-        // Cek apakah user memiliki role yang diminta (many-to-many)
-        if (!$user->hasRole($role)) {
-            abort(403, 'Unauthorized Access. Anda tidak memiliki akses sebagai ' . $role . '.');
-        }
-
-        return $next($request);
+    if (!$user) {
+        abort(403, 'Unauthorized Access.');
     }
+
+    // Cek apakah active_role user cocok dengan salah satu role yang diizinkan
+    foreach ($roles as $role) {
+        if ($user->hasRole($role) && $user->active_role === $role) {
+            return $next($request);
+        }
+    }
+
+    abort(403, 'Unauthorized. Role aktif Anda tidak memiliki akses ke halaman ini.');
+}
+
 }
