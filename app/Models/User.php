@@ -53,7 +53,6 @@ public function receivedReviews()
         'phone',
         'address',
         'profile_photo_path',
-        'active_role',
         'latitude',
         'longitude',
         'pairing_token',
@@ -108,7 +107,7 @@ public function receivedReviews()
      */
     public function pairWithStudent(string $token, string $relationship = 'anak'): bool
     {
-        if ($this->active_role !== 'parent') {
+        if ($this->active_role !== 'orangtua') {
             return false;
         }
 

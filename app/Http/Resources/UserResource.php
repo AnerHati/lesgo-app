@@ -27,7 +27,15 @@ class UserResource extends JsonResource
             'roles' => $this->whenLoaded('roles', function() {
                 return $this->roles->pluck('name');
             }),
-            'tutor_profile' => $this->whenLoaded('tutorProfile'),
+            'tutor_profile' => $this->whenLoaded('tutorProfile', function() {
+                // Tambahkan info verifikasi dari pivot roles jika user adalah tutor
+                $tutorPivot = $this->getRolePivot('tutor');
+                return array_merge($this->tutorProfile->toArray(), [
+                    'is_verified' => (bool) ($tutorPivot->is_verified ?? false),
+                    // Misal kita ingin tampilkan total jam mengajar (berdasarkan jadwal selesai)
+                    'total_teaching_hours' => $this->tutorClasses()->withCount(['schedules' => fn($q) => $q->where('status', 'completed')])->get()->sum('schedules_count') * 1.5, // assuming 1.5 hours per session
+                ]);
+            }),
             'student_profile' => $this->whenLoaded('studentProfile'),
             'parent_profile' => $this->whenLoaded('parentProfile'),
             'created_at' => $this->created_at,

@@ -41,7 +41,7 @@ const theme = computed(() => {
         label: 'Ijazah Pendidikan Terakhir',
         emoji: '🎓'
     };
-    if (role === 'orangtua' || role === 'parent') return { 
+    if (role === 'orangtua') return { 
         color: 'text-green-600', 
         bg: 'bg-green-600', 
         ring: 'ring-green-50', 

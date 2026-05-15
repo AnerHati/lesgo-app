@@ -109,26 +109,23 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Dashboard routes
-       Route::middleware('role:siswa')->group(function () {
+    Route::middleware('role:siswa')->group(function () {
         Route::get('/dashboard-siswa', StudentDashboardController::class)->name('dashboard.siswa');
         Route::post('/booking-tutor', [StudentDashboardController::class, 'storeBooking'])->name('booking.tutor');
-        Route::get('/api/tutors', [\App\Http\Controllers\Api\TutorController::class, 'index']);
-
     });
 
     Route::middleware('role:tutor')->group(function () {
         Route::get('/dashboard-tutor', [TutorDashboardController::class, 'index'])->name('dashboard.tutor');
         
-        // Ketersediaan Jadwal Tutor
+        // Ketersediaan Jadwal Tutor (Web)
         Route::get('/tutor/ketersediaan', [\App\Http\Controllers\TutorAvailabilityController::class, 'index'])->name('tutor.availability.index');
         Route::post('/tutor/ketersediaan', [\App\Http\Controllers\TutorAvailabilityController::class, 'store'])->name('tutor.availability.store');
-        Route::get('/api/tutor/{tutorId}/availabilities', [\App\Http\Controllers\TutorAvailabilityController::class, 'getByTutor']);
 
         // Terima / Tolak Pesanan
         Route::post('/tutor/booking/{id}/accept', [TutorDashboardController::class, 'acceptBooking'])->name('tutor.booking.accept');
         Route::post('/tutor/booking/{id}/reject', [TutorDashboardController::class, 'rejectBooking'])->name('tutor.booking.reject');
         
-        // CRUD Tutor
+        // CRUD Tutor (Actions)
         Route::post('/tutor/jadwal', [TutorDashboardController::class, 'storeSchedule'])->name('tutor.jadwal.store');
         Route::post('/tutor/kelas/{studyClass}/materi', [TutorDashboardController::class, 'storeMaterial'])->name('tutor.materi.store');
         Route::post('/tutor/kelas/{studyClass}/tugas', [TutorDashboardController::class, 'storeTask'])->name('tutor.tugas.store');
@@ -162,61 +159,4 @@ Route::middleware('auth')->group(function () {
         };
     })->name('switch.role');
 
-    // ── Chat API (hanya siswa & tutor yang boleh akses) ──────────────────
-    Route::middleware('role:siswa,tutor')->group(function () {
-        Route::get('/api/chat/contacts', [MessageController::class, 'getContacts']);
-        Route::get('/api/chat/messages/{contactId}', [MessageController::class, 'fetchMessages']);
-        Route::post('/api/chat/messages', [MessageController::class, 'sendMessage'])->middleware('throttle:60,1');
-    });
-
-    Route::get('/api/reviews/tutor/{tutorId}', [\App\Http\Controllers\ReviewController::class, 'getTutorReviews']);
-    Route::post('/api/attachments', [\App\Http\Controllers\AttachmentController::class, 'upload'])->middleware('throttle:30,1');
-    Route::get('/api/attachments/{id}/download', [\App\Http\Controllers\AttachmentController::class, 'download'])->name('attachments.download');
-    Route::delete('/api/attachments/{id}', [\App\Http\Controllers\AttachmentController::class, 'delete']);
-
-// ── API Notifikasi ────────────────────────────────────────
-Route::get('/api/notifications', [\App\Http\Controllers\NotificationController::class, 'index']);
-Route::get('/api/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount']);
-Route::post('/api/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
-Route::post('/api/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
-
-
-
-// ── API khusus Siswa ──────────────────────────────────────
-Route::middleware('role:siswa')->group(function () {
-    Route::post('/api/payment/{transactionId}/snap-token', [\App\Http\Controllers\PaymentController::class, 'createSnapToken']);
-    Route::post('/api/payment/{transactionId}/refund', [\App\Http\Controllers\RefundController::class, 'requestRefund'])->middleware('throttle:5,1');
-    Route::post('/api/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->middleware('throttle:30,1');
-    Route::get('/api/tasks/{id}/quiz', [\App\Http\Controllers\TaskController::class, 'getQuiz']);
-    Route::post('/api/tasks/{id}/submit', [\App\Http\Controllers\TaskController::class, 'submitQuiz'])->middleware('throttle:30,1');
-    Route::get('/api/classes/{id}/materials', [\App\Http\Controllers\MaterialController::class, 'getClassMaterials']);
-    Route::get('/api/transactions/student', [\App\Http\Controllers\TransactionController::class, 'getStudentTransactions']);
-    
-    // Pairing routes for student
-    Route::get('/api/pairing/token', [\App\Http\Controllers\ParentStudentPairingController::class, 'getToken']);
-    Route::post('/api/pairing/token', [\App\Http\Controllers\ParentStudentPairingController::class, 'generateToken']);
 });
-
-// ── API khusus Orang Tua ──────────────────────────────────
-Route::middleware('role:orangtua')->group(function () {
-    Route::get('/api/pairing/children', [\App\Http\Controllers\ParentStudentPairingController::class, 'getChildren']);
-    Route::post('/api/pairing/pair', [\App\Http\Controllers\ParentStudentPairingController::class, 'pair']);
-});
-
-// ── API khusus Tutor ──────────────────────────────────────
-Route::middleware('role:tutor')->group(function () {
-    Route::post('/api/tasks/{id}/questions', [\App\Http\Controllers\TaskController::class, 'createQuestion'])->middleware('throttle:30,1');
-    Route::get('/api/transactions/tutor', [\App\Http\Controllers\TransactionController::class, 'getTutorEarnings']);
-    
-    // Availability routes
-    Route::get('/api/tutor/availabilities', [\App\Http\Controllers\TutorAvailabilityController::class, 'index']);
-    Route::post('/api/tutor/availabilities', [\App\Http\Controllers\TutorAvailabilityController::class, 'store']);
-    Route::delete('/api/tutor/availabilities/{id}', [\App\Http\Controllers\TutorAvailabilityController::class, 'destroy']);
-    Route::post('/api/tutor/availabilities/sync', [\App\Http\Controllers\TutorAvailabilityController::class, 'sync']);
-});
-
-});
-
-// ── Midtrans Webhook (di LUAR auth middleware — server-to-server) ─────
-Route::post('/api/midtrans/webhook', [\App\Http\Controllers\PaymentController::class, 'handleWebhook'])
-    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);

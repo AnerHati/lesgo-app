@@ -27,6 +27,7 @@ class TutorProfile extends Model
             'availability' => 'array',
             'hourly_rate' => 'decimal:2',
             'rating' => 'decimal:2',
+            'education' => 'encrypted',
         ];
     }
 

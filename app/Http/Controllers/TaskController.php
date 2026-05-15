@@ -29,6 +29,9 @@ class TaskController extends Controller
             $query->select('id', 'task_question_id', 'label', 'value');
         }])->findOrFail($id);
 
+        // Security Check: Pastikan hanya siswa pemilik kelas yang bisa akses
+        \Illuminate\Support\Facades\Gate::authorize('accessAsStudent', $task->studyClass);
+
         return response()->json([
             'task' => $task,
             'questions' => $task->questions
@@ -46,6 +49,10 @@ class TaskController extends Controller
         ]);
 
         $task = Task::with('questions.options')->findOrFail($id);
+
+        // Security Check: Pastikan hanya siswa pemilik kelas yang bisa submit
+        \Illuminate\Support\Facades\Gate::authorize('accessAsStudent', $task->studyClass);
+
         $studentId = Auth::id();
 
         // 1. Cek apakah siswa sudah pernah mengerjakan
@@ -99,9 +106,11 @@ class TaskController extends Controller
         // Update skor di database
         $submission->update(['score' => $score]);
         
-        // ── Gamifikasi: Berikan Poin ──
-        // Contoh: Memberikan +50 poin setiap kali mengumpulkan tugas
-        $this->gamificationService->addPointsToUser(Auth::user(), 50);
+        // ── Gamifikasi: Berikan Poin Dinamis ──
+        // Rumus: 10 (base points) + (score / 2)
+        // Jadi jika skor 100 -> dapat 60 poin. Jika skor 0 -> dapat 10 poin (reward usaha).
+        $earnedPoints = 10 + (int)($score / 2);
+        $this->gamificationService->addPointsToUser(Auth::user(), $earnedPoints);
 
         // Update status di table tasks (jika perlu)
         $task->update(['status' => 'submitted']);
@@ -130,6 +139,9 @@ class TaskController extends Controller
         ]);
 
         $task = Task::findOrFail($id);
+
+        // Security Check: Gunakan Policy untuk memastikan tutor adalah pemilik kelas
+        \Illuminate\Support\Facades\Gate::authorize('manage', $task->studyClass);
 
         // 1. Simpan Pertanyaan
         $taskQuestion = \App\Models\TaskQuestion::create([

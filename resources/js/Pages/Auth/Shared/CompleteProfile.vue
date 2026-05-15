@@ -18,7 +18,7 @@ const submit = () => {
 
 const theme = computed(() => {
     if (role === 'tutor') return { color: 'text-[#FACC15]', bg: 'bg-[#FACC15]', ring: 'ring-yellow-50', border: 'focus:ring-yellow-400' };
-    if (role === 'orangtua' || role === 'parent') return { color: 'text-green-600', bg: 'bg-green-600', ring: 'ring-green-50', border: 'focus:ring-green-500' };
+    if (role === 'orangtua') return { color: 'text-green-600', bg: 'bg-green-600', ring: 'ring-green-50', border: 'focus:ring-green-500' };
     return { color: 'text-blue-600', bg: 'bg-blue-600', ring: 'ring-blue-50', border: 'focus:ring-blue-500' };
 });
 </script>

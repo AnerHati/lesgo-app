@@ -57,15 +57,28 @@ class StudentDashboardController extends Controller
                 ->with(['studyClass.subject'])
                 ->get();
 
+            // 4. Ambil Semua Lencana (Earned vs Locked)
+            $allBadges = \App\Models\Badge::orderBy('required_points', 'asc')->get();
+            $earnedBadgeIds = $user->badges()->pluck('badges.id')->toArray();
+
+            $badgesWithStatus = $allBadges->map(function ($badge) use ($earnedBadgeIds) {
+                return [
+                    'id' => $badge->id,
+                    'name' => $badge->name,
+                    'description' => $badge->description,
+                    'icon_path' => $badge->icon_path,
+                    'required_points' => $badge->required_points,
+                    'is_earned' => in_array($badge->id, $earnedBadgeIds),
+                ];
+            });
+
             return [
                 'progresKelas' => $studyClasses,
                 'jadwal' => $jadwal,
                 'tugas' => $tugas,
-                'badges' => $user->badges()->get(),
+                'badges' => $badgesWithStatus,
                 'totalPoints' => $user->learning_points,
-                'nextBadge' => \App\Models\Badge::where('required_points', '>', $user->learning_points)
-                    ->orderBy('required_points', 'asc')
-                    ->first(),
+                'nextBadge' => $allBadges->where('required_points', '>', $user->learning_points)->first(),
             ];
         });
 

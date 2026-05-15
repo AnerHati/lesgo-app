@@ -69,20 +69,34 @@
           <h3 class="font-black text-gray-900 text-lg flex items-center gap-2">
             <span class="text-2xl">🏆</span> Lencana Saya
           </h3>
-          <span class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase">{{ badges?.length || 0 }} Diraih</span>
+          <span class="text-[10px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase">{{ earnedBadgesCount }} Diraih</span>
         </div>
 
         <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar">
           <div v-if="badges && badges.length > 0" class="grid grid-cols-2 gap-6">
-            <div v-for="badge in badges" :key="badge.id" class="flex flex-col items-center group">
+            <div v-for="badge in badges" :key="badge.id" class="flex flex-col items-center group relative">
               <div class="relative">
-                <div class="w-20 h-20 rounded-[24px] bg-gradient-to-b from-gray-50 to-gray-100 border-b-4 border-gray-200 flex items-center justify-center text-4xl shadow-inner group-hover:from-yellow-50 group-hover:to-yellow-100 group-hover:border-yellow-200 transition-all duration-300 transform group-hover:-translate-y-1">
+                <div 
+                  class="w-20 h-20 rounded-[24px] bg-gradient-to-b from-gray-50 to-gray-100 border-b-4 border-gray-200 flex items-center justify-center text-4xl shadow-inner transition-all duration-300 transform"
+                  :class="[
+                    badge.is_earned 
+                      ? 'group-hover:from-yellow-50 group-hover:to-yellow-100 group-hover:border-yellow-200 group-hover:-translate-y-1' 
+                      : 'grayscale opacity-40 blur-[0.5px] cursor-not-allowed'
+                  ]"
+                >
                   {{ badge.icon_path }}
                 </div>
-                <!-- Sparkle effect on hover -->
-                <div class="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity animate-pulse shadow-lg">✨</div>
+                <!-- Sparkle effect on hover for earned badges -->
+                <div v-if="badge.is_earned" class="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity animate-pulse shadow-lg">✨</div>
+                
+                <!-- Tooltip for unearned badges -->
+                <div v-if="!badge.is_earned" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[8px] px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 font-black uppercase">
+                  {{ badge.required_points }} XP Diperlukan
+                </div>
               </div>
-              <p class="text-[10px] font-black text-gray-800 mt-3 text-center leading-tight uppercase tracking-tighter">{{ badge.name }}</p>
+              <p class="text-[10px] font-black mt-3 text-center leading-tight uppercase tracking-tighter" :class="badge.is_earned ? 'text-gray-800' : 'text-gray-400'">
+                {{ badge.name }}
+              </p>
             </div>
           </div>
           
@@ -95,15 +109,56 @@
       </div>
     </div>
 
-    <!-- Rest of the dashboard (Jadwal, Tugas, etc.) -->
+    <!-- Leaderboard & Activity Feed -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+       <!-- Leaderboard Section -->
+       <div class="lg:col-span-4 bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm flex flex-col">
+          <div class="flex justify-between items-center mb-6">
+             <h3 class="font-black text-gray-800 flex items-center gap-2">🔥 Papan Peringkat</h3>
+             <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Top 10</span>
+          </div>
+          
+          <div class="flex-1 space-y-3">
+             <div v-if="isLoadingLeaderboard" class="space-y-3">
+                <div v-for="i in 5" :key="i" class="h-14 bg-gray-50 animate-pulse rounded-2xl"></div>
+             </div>
+             <div v-else-if="leaderboard.length" class="space-y-2">
+                <div 
+                  v-for="(student, index) in leaderboard" 
+                  :key="student.id" 
+                  class="flex items-center gap-3 p-3 rounded-2xl transition-all"
+                  :class="[
+                    student.id === user.id ? 'bg-blue-50 border border-blue-100 scale-[1.02]' : 'bg-gray-50/50 hover:bg-gray-50'
+                  ]"
+                >
+                   <div class="w-6 text-center font-black text-xs" :class="index < 3 ? 'text-yellow-600' : 'text-gray-400'">
+                      {{ index + 1 }}
+                   </div>
+                   <div class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-lg overflow-hidden shrink-0 border border-gray-100">
+                      <img v-if="student.profile_photo_path" :src="student.profile_photo_path" class="w-full h-full object-cover" />
+                      <span v-else>{{ student.name[0] }}</span>
+                   </div>
+                   <div class="flex-1 min-w-0">
+                      <h4 class="text-xs font-black text-gray-900 truncate">{{ student.name }}</h4>
+                      <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{{ student.learning_points }} XP</p>
+                   </div>
+                   <div v-if="index === 0" class="text-lg">👑</div>
+                   <div v-if="student.id === user.id" class="text-[8px] font-black bg-blue-600 text-white px-2 py-0.5 rounded-full uppercase">Kamu</div>
+                </div>
+             </div>
+             <div v-else class="text-center py-10 text-gray-400 italic text-sm">
+                Belum ada data peringkat.
+             </div>
+          </div>
+       </div>
+
        <!-- Jadwal Section -->
-       <div class="lg:col-span-6 bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm">
+       <div class="lg:col-span-8 bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm">
           <div class="flex justify-between items-center mb-6">
              <h3 class="font-black text-gray-800 flex items-center gap-2">📅 Jadwal Mendatang</h3>
              <button class="text-xs font-bold text-blue-600 hover:underline">Lihat Semua</button>
           </div>
-          <div v-if="jadwal?.length" class="space-y-4">
+          <div v-if="jadwal?.length" class="grid grid-cols-1 md:grid-cols-2 gap-4">
              <div v-for="j in jadwal" :key="j.id" class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50/50 border border-transparent hover:border-blue-100 hover:bg-white transition-all group">
                 <div class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">{{ j.study_class?.subject?.icon || '📚' }}</div>
                 <div class="flex-1">
@@ -119,33 +174,16 @@
              <p class="text-sm font-medium italic">Tidak ada jadwal terdekat.</p>
           </div>
        </div>
-
-       <!-- Tugas Section -->
-       <div class="lg:col-span-6 bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm">
-          <div class="flex justify-between items-center mb-6">
-             <h3 class="font-black text-gray-800 flex items-center gap-2">📝 Tugas Pending</h3>
-             <button class="text-xs font-bold text-blue-600 hover:underline">Lihat Semua</button>
-          </div>
-          <div v-if="tugas?.length" class="space-y-4">
-             <div v-for="t in tugas" :key="t.id" class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50/50 border border-transparent hover:border-orange-100 hover:bg-white transition-all group">
-                <div class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">📄</div>
-                <div class="flex-1">
-                   <h4 class="text-sm font-black text-gray-900">{{ t.title }}</h4>
-                   <p class="text-[11px] text-orange-500 font-bold uppercase tracking-wider">Tenggat: {{ waktuSingkat(t.deadline) }}</p>
-                </div>
-                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ t.study_class?.subject?.name }}</div>
-             </div>
-          </div>
-          <div v-else class="py-8 text-center text-gray-400">
-             <p class="text-sm font-medium italic">Semua tugas telah selesai! 🎉</p>
-          </div>
-       </div>
     </div>
+
+    <!-- Tugas Section -->
+    <div class="bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm">
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import axios from 'axios'
 
 const props = defineProps({
   jadwal: { type: Array, default: () => [] },
@@ -158,6 +196,29 @@ const props = defineProps({
 })
 
 defineEmits(['navigate'])
+
+const leaderboard = ref([])
+const isLoadingLeaderboard = ref(false)
+
+const fetchLeaderboard = async () => {
+  isLoadingLeaderboard.value = true
+  try {
+    const response = await axios.get('/api/gamification/leaderboard')
+    leaderboard.value = response.data
+  } catch (error) {
+    console.error('Gagal mengambil data leaderboard', error)
+  } finally {
+    isLoadingLeaderboard.value = false
+  }
+}
+
+onMounted(() => {
+  fetchLeaderboard()
+})
+
+const earnedBadgesCount = computed(() => {
+  return props.badges.filter(b => b.is_earned).length
+})
 
 // Kalkulasi Progres ke Lencana Berikutnya
 const progressToNextBadge = computed(() => {

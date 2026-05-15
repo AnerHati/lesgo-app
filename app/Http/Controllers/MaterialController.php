@@ -17,6 +17,9 @@ class MaterialController extends Controller
 
     public function store(Request $request, StudyClass $studyClass): JsonResponse
     {
+        // Security Check: Hanya tutor pemilik kelas yang bisa menambah materi
+        \Illuminate\Support\Facades\Gate::authorize('manage', $studyClass);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
@@ -41,14 +44,13 @@ class MaterialController extends Controller
 
     public function getClassMaterials($classId)
     {
+        $studyClass = StudyClass::findOrFail($classId);
         
-        $userId = Auth::id();
-        
-        $studyClass = StudyClass::where('id', $classId)
-            ->where(function($query) use ($userId) {
-                $query->where('student_id', $userId)
-                      ->orWhere('tutor_id', $userId);
-            })->firstOrFail();
+        // Security Check: Hanya siswa atau tutor di kelas tersebut yang bisa melihat materi
+        if ($studyClass->student_id !== Auth::id() && $studyClass->tutor_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke materi kelas ini.');
+        }
+
         // Ambil materi yang diurutkan berdasarkan order_index
         $materials = Material::where('study_class_id', $studyClass->id)
             ->with('tasks') // Load juga tugas yang terhubung ke materi ini

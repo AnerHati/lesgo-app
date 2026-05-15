@@ -23,11 +23,9 @@ class StudyClassObserver
         if ($studyClass->isDirty('status') && $studyClass->status === StudyClassStatus::COMPLETED) {
             $student = $studyClass->student;
             if ($student) {
-                $this->gamificationService->awardPoints(
+                $this->gamificationService->addPointsToUser(
                     $student, 
-                    100, 
-                    'Menyelesaikan kelas: ' . $studyClass->subject->name, 
-                    $studyClass
+                    100
                 );
             }
         }

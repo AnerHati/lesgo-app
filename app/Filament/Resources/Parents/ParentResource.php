@@ -50,7 +50,7 @@ class ParentResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereHas('roles', fn ($query) => $query->where('name', 'parent'))
+            ->whereHas('roles', fn ($query) => $query->where('name', 'orangtua'))
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

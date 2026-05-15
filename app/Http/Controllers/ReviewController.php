@@ -10,6 +10,13 @@ use App\Enums\StudyClassStatus;
 
 class ReviewController extends Controller
 {
+    protected $gamificationService;
+
+    public function __construct(\App\Services\GamificationService $gamificationService)
+    {
+        $this->gamificationService = $gamificationService;
+    }
+
     // Siswa submit review setelah kelas selesai
     public function store(Request $request)
     {
@@ -31,6 +38,9 @@ class ReviewController extends Controller
             abort(403, 'Kelas belum bisa di-review.');
         }
 
+        // Cek apakah ini review pertama siswa
+        $isFirstReview = Review::where('student_id', Auth::id())->count() === 0;
+
         $review = Review::create([
             'study_class_id' => $studyClass->id,
             'student_id' => Auth::id(),
@@ -39,19 +49,14 @@ class ReviewController extends Controller
             'comment' => $request->comment,
         ]);
 
-        // Update rata-rata rating tutor
-        $avgRating = Review::where('tutor_id', $studyClass->tutor_id)
-            ->where('is_visible', true)
-            ->avg('rating');
-
-        $totalReviews = Review::where('tutor_id', $studyClass->tutor_id)
-            ->where('is_visible', true)
-            ->count();
-
-        $studyClass->tutor->tutorProfile->update([
-            'rating' => round($avgRating, 2),
-            'total_reviews' => $totalReviews,
-        ]);
+        // ── Gamifikasi: Berikan Poin ──
+        if ($isFirstReview) {
+            // Berikan +100 poin untuk review pertama
+            $this->gamificationService->addPointsToUser(Auth::user(), 100);
+        } else {
+            // Berikan +20 poin untuk review reguler
+            $this->gamificationService->addPointsToUser(Auth::user(), 20);
+        }
 
         return response()->json([
             'message' => 'Review berhasil dikirim!',

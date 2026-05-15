@@ -12,4 +12,10 @@ class StudyClassPolicy
     {
         return $user->id === $studyClass->tutor_id;
     }
+
+    // Pastikan siswa terdaftar di kelas ini
+    public function accessAsStudent(User $user, StudyClass $studyClass): bool
+    {
+        return $user->id === $studyClass->student_id;
+    }
 }

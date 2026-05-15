@@ -37,6 +37,12 @@ class StudyClassService
             $package = Package::where('slug', $data['paket_mengajar'])->firstOrFail();
             $tutor = User::findOrFail($data['tutor_id']);
             
+            // Security Check: Pastikan tutor sudah diverifikasi oleh admin
+            $tutorPivot = $tutor->getRolePivot('tutor');
+            if (!$tutorPivot || !$tutorPivot->is_verified) {
+                throw new \Exception('Tutor ini belum diverifikasi oleh admin dan belum dapat menerima pesanan.');
+            }
+
             $tutorSubject = $tutor->taughtSubjects()
                 ->where('subject_id', $data['subject_id'])
                 ->first();
@@ -112,7 +118,25 @@ class StudyClassService
                 ]);
             }
 
+            // Notify Student
+            $studyClass->load(['student', 'subject']);
+            $studyClass->student->notify(new \App\Notifications\BookingAcceptedNotification($studyClass));
+
             return $studyClass;
         });
+    }
+
+    /**
+     * Reject a booking.
+     */
+    public function rejectBooking(StudyClass $studyClass): StudyClass
+    {
+        $studyClass->transitionTo(StudyClassStatus::CANCELLED);
+        
+        // Notify Student
+        $studyClass->load(['student', 'subject']);
+        $studyClass->student->notify(new \App\Notifications\BookingRejectedNotification($studyClass));
+
+        return $studyClass;
     }
 }

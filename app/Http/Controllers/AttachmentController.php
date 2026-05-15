@@ -45,11 +45,23 @@ class AttachmentController extends Controller
         $attachment = Attachment::findOrFail($id);
         $user = Auth::user();
 
-        // Otorisasi: Hanya pengupload atau orang yang berhak (bisa ditambah logic sesuai kebutuhan)
-        // Misalnya: Jika attachable_type adalah TaskSubmission, maka tutor pemilik kelas juga boleh download.
-        if ($attachment->uploaded_by !== $user->id) {
-             // Cek tambahan jika diperlukan, untuk sekarang batasi pengupload saja
-             abort(403, 'Anda tidak memiliki akses ke file ini.');
+        // Security Hardening: Validasi Kepemilikan & Akses
+        $isOwner = $attachment->uploaded_by === $user->id;
+        $isRelatedParticipant = false;
+
+        // Jika attachable adalah bagian dari StudyClass (Materi/Tugas/Note)
+        if (method_exists($attachment->attachable, 'studyClass')) {
+            $studyClass = $attachment->attachable->studyClass;
+            $isRelatedParticipant = ($studyClass->student_id === $user->id || $studyClass->tutor_id === $user->id);
+        } 
+        // Jika attachable adalah StudyClass itu sendiri
+        elseif ($attachment->attachable instanceof \App\Models\StudyClass) {
+            $studyClass = $attachment->attachable;
+            $isRelatedParticipant = ($studyClass->student_id === $user->id || $studyClass->tutor_id === $user->id);
+        }
+
+        if (!$isOwner && !$isRelatedParticipant) {
+             abort(403, 'Anda tidak memiliki hak akses untuk mengunduh file ini.');
         }
 
         if (!Storage::disk('private')->exists($attachment->file_path)) {

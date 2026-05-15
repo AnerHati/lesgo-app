@@ -117,7 +117,8 @@ class TutorDashboardController extends Controller
         $studyClass = StudyClass::findOrFail($id);
         Gate::authorize('manage', $studyClass);
 
-        $studyClass->transitionTo(StudyClassStatus::CANCELLED);
+        $this->studyClassService->rejectBooking($studyClass);
+        
         Cache::forget("student.dashboard." . $studyClass->student_id);
 
         return redirect()->back();
